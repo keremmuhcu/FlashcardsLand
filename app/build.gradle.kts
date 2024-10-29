@@ -75,7 +75,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     // serialization json
     implementation(libs.kotlinx.serialization.json)
-    // android-compose-core
+    // koin -> android-compose-core
     implementation(libs.bundles.koin)
     // room
     implementation(libs.bundles.room)

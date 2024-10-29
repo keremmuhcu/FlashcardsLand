@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.keremmuhcu.flashcardsland.presentation.set_list.SetListScreen
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
 import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
 
@@ -25,20 +26,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FlashcardsLandTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column(
-                        modifier = Modifier.fillMaxSize().padding(innerPadding),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Merhaba Dünya!",
-                            fontFamily = gintoFontFamily,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
+                SetListScreen()
             }
         }
     }

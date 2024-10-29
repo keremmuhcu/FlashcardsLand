@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "flashcard_set")
 data class FlashcardSet(
-    @PrimaryKey(autoGenerate = true) val setId: Int,
+    @PrimaryKey(autoGenerate = true) val setId: Int? = null,
     val title: String,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()

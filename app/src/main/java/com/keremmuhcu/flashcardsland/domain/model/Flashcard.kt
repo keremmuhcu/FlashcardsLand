@@ -17,7 +17,7 @@ import androidx.room.PrimaryKey
 )
 data class Flashcard(
     val setId: Int,
-    @PrimaryKey(autoGenerate = true) val cardId: Int,
+    @PrimaryKey(autoGenerate = true) val cardId: Int? = null,
     val term: String,
     val definition: String,
     val examples: List<String> = emptyList(),
