@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardRepository
+import com.keremmuhcu.flashcardsland.domain.repository.FlashcardSetRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -23,7 +24,7 @@ class AddOrEditFlashcardViewModel(
 
     fun onEvent(event: AddOrEditFlashcardEvent) {
         when (event) {
-            AddOrEditFlashcardEvent.OnDeleteButtonClicked -> TODO()
+            AddOrEditFlashcardEvent.OnDeleteButtonClicked -> deleteFlashcard()
             AddOrEditFlashcardEvent.OnExampleSwitchChange -> {
                 _state.update {
                     it.copy(isExampleSwitchChecked = !it.isExampleSwitchChecked)
@@ -69,22 +70,41 @@ class AddOrEditFlashcardViewModel(
         }
     }
 
+    /*private fun updateFlashcard(flashcard: Flashcard) {
+        viewModelScope.launch {
+            flashcardRepository.upsertFlashcard(
+                flashcard = Flashcard(
+                    cardId = cardId,
+                    setId = state.value.selectedSetId,
+                    term = state.value.termTf,
+                    definition = state.value.definitionTf,
+                    isHard = state.value.isHardSwitchChecked,
+                    isStudied = false,
+                    isHardStudied = false,
+                    examples = if (state.value.isExampleSwitchChecked) state.value.examplesTfList else emptyList()
+                )
+            )
+        }
+    }*/
+
     private fun addAndGoNext() {
         viewModelScope.launch {
-            _state.value.selectedSetId?.let { setId->
-                flashcardRepository.upsertFlashcard(
-                    flashcard = Flashcard(
-                        setId = setId,
-                        term = state.value.termTf.trim(),
-                        definition = state.value.definitionTf.trim(),
-                        isHard = state.value.isHardSwitchChecked,
-                        isStudied = false,
-                        isHardStudied = false,
-                        examples = if (state.value.isExampleSwitchChecked) state.value.examplesTfList.map { it.trim() } else emptyList()
-                    )
+            flashcardRepository.upsertFlashcard(
+                flashcard = Flashcard(
+                    setId = state.value.selectedSetId,
+                    term = state.value.termTf.trim(),
+                    definition = state.value.definitionTf.trim(),
+                    isHard = state.value.isHardSwitchChecked,
+                    isStudied = false,
+                    isHardStudied = false,
+                    examples =
+                    if (state.value.isExampleSwitchChecked) {
+                        state.value.examplesTfList.map { it.trim() }
+                    } else emptyList()
                 )
-                resetFields()
-            }
+            )
+
+            resetFields()
         }
     }
 
@@ -96,28 +116,35 @@ class AddOrEditFlashcardViewModel(
                 isHardSwitchChecked = false,
                 isExampleSwitchChecked = false,
                 examplesTfList = listOf(""),
-                isSuccessful = true
+                isSuccessful = !it.isSuccessful
             )
         }
     }
 
     private fun addFlashcard() {
         viewModelScope.launch {
-            _state.value.selectedSetId?.let { setId->
-                flashcardRepository.upsertFlashcard(
-                    flashcard = Flashcard(
-                        setId = setId,
-                        term = state.value.termTf,
-                        definition = state.value.definitionTf,
-                        isHard = state.value.isHardSwitchChecked,
-                        isStudied = false,
-                        isHardStudied = false,
-                        examples = if (state.value.isExampleSwitchChecked) state.value.examplesTfList else emptyList()
-                    )
+            flashcardRepository.upsertFlashcard(
+                flashcard = Flashcard(
+                    cardId = state.value.selectedFlashcard?.cardId,
+                    setId = state.value.selectedSetId,
+                    term = state.value.termTf.trim(),
+                    definition = state.value.definitionTf.trim(),
+                    isHard = state.value.isHardSwitchChecked,
+                    isStudied = false,
+                    isHardStudied = false,
+                    examples =
+                        if (state.value.isExampleSwitchChecked) {
+                            state.value.examplesTfList.map { it.trim() }
+                        } else emptyList()
                 )
-            }
+            )
         }
+    }
 
+    fun deleteFlashcard() {
+        viewModelScope.launch {
+            flashcardRepository.deleteFlashcard(state.value.selectedFlashcard!!)
+        }
     }
 
     fun setSelectedSetId(setId: Int) {
@@ -125,4 +152,22 @@ class AddOrEditFlashcardViewModel(
             it.copy(selectedSetId = setId)
         }
     }
+
+    fun setSelectedFlashcard(flashcardId: Int) {
+        viewModelScope.launch {
+            val flashcard = flashcardRepository.getFlashcardById(flashcardId)
+            println(flashcard.examples.size)
+            _state.update {
+                it.copy(
+                    selectedFlashcard = flashcard,
+                    termTf = flashcard.term,
+                    definitionTf = flashcard.definition,
+                    isHardSwitchChecked = flashcard.isHard,
+                    isExampleSwitchChecked = !(flashcard.examples.size == 1 && flashcard.examples[0].isEmpty()),
+                    examplesTfList = flashcard.examples
+                )
+            }
+        }
+    }
+
 }

@@ -20,10 +20,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.keremmuhcu.flashcardsland.R
 import com.keremmuhcu.flashcardsland.presentation.components.CustomAlertDialog
+import com.keremmuhcu.flashcardsland.presentation.components.EmptyListScreenComponent
 import com.keremmuhcu.flashcardsland.presentation.components.LoadingComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.AddOrEditSetDialog
-import com.keremmuhcu.flashcardsland.presentation.set_list.components.EmptySetListComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListCardItemButtonsComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListCardItemContentComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListItemComponent
@@ -34,7 +35,8 @@ import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
 fun SetListScreen(
     navigateToAddOrEditFlashcardScreen: (Int) -> Unit,
     state: State<SetListState>,
-    onEvent: (SetListEvent) -> Unit
+    onEvent: (SetListEvent) -> Unit,
+    navigateToFlashcardsScreen: (Int, String) -> Unit
 ) {
 
     var isAddSetDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -67,11 +69,14 @@ fun SetListScreen(
                 .padding(16.dp)
 
             if (state.value.flashcardSets.isEmpty()) {
-                EmptySetListComponent(
+                EmptyListScreenComponent(
                     modifier = modifier,
                     onButtonClicked = {
                         isAddSetDialogOpen = true
-                    }
+                    },
+                    infoIcon = R.drawable.no_sets,
+                    infoText = "Henüz bir set oluşturmadınız\nDaha verimli çalışmak için \nhemen başla.",
+                    buttonText = "Set oluştur"
                 )
             } else {
                 LazyColumn(
@@ -80,31 +85,36 @@ fun SetListScreen(
                 ) {
                     items(state.value.flashcardSets) { set->
                         var isDropdownMenuOpen by remember { mutableStateOf(false) }
-                        SetListItemComponent {
-                            SetListCardItemContentComponent(
-                                set = set,
-                                isDropdownMenuOpen = isDropdownMenuOpen,
-                                onDropdownClicked = { isDropdownMenuOpen = !isDropdownMenuOpen },
-                                onEditClicked = {
-                                    onEvent(SetListEvent.ChangeSelectedSet(set))
-                                    onEvent(SetListEvent.OnSetTitleTextFieldChange(set.flashcardSet.title))
-                                    isUpdateSetDialogOpen = true
-                                    isDropdownMenuOpen = !isDropdownMenuOpen
+                        SetListItemComponent(
+                            setItemClicked = {
+                                navigateToFlashcardsScreen(set.flashcardSet.setId!!, set.flashcardSet.title)
+                            },
+                            content = {
+                                SetListCardItemContentComponent(
+                                    set = set,
+                                    isDropdownMenuOpen = isDropdownMenuOpen,
+                                    onDropdownClicked = { isDropdownMenuOpen = !isDropdownMenuOpen },
+                                    onEditClicked = {
+                                        onEvent(SetListEvent.ChangeSelectedSet(set))
+                                        onEvent(SetListEvent.OnSetTitleTextFieldChange(set.flashcardSet.title))
+                                        isUpdateSetDialogOpen = true
+                                        isDropdownMenuOpen = !isDropdownMenuOpen
 
-                                },
-                                onDeleteClicked = {
-                                    onEvent(SetListEvent.ChangeSelectedSet(set))
-                                    isDeleteDialogOpen = true
-                                    isDropdownMenuOpen = !isDropdownMenuOpen
-                                }
-                            )
-                            SetListCardItemButtonsComponent(
-                                isStudyButtonEnabled = set.cards.isNotEmpty(),
-                                studyButtonClicked = {
-                                    navigateToAddOrEditFlashcardScreen(set.flashcardSet.setId!!)
-                                }
-                            )
-                        }
+                                    },
+                                    onDeleteClicked = {
+                                        onEvent(SetListEvent.ChangeSelectedSet(set))
+                                        isDeleteDialogOpen = true
+                                        isDropdownMenuOpen = !isDropdownMenuOpen
+                                    }
+                                )
+                                SetListCardItemButtonsComponent(
+                                    isStudyButtonEnabled = set.cards.isNotEmpty(),
+                                    studyButtonClicked = {
+                                        navigateToAddOrEditFlashcardScreen(set.flashcardSet.setId!!)
+                                    }
+                                )
+                            }
+                        )
                     }
                 }
             }

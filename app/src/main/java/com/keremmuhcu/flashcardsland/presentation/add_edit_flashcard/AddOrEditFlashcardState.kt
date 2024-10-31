@@ -9,7 +9,7 @@ data class AddOrEditFlashcardState(
     val isHardSwitchChecked: Boolean = false,
     val isExampleSwitchChecked: Boolean = false,
     val selectedFlashcard: Flashcard? = null,
-    val selectedSetId: Int? = null,
+    val selectedSetId: Int = -1,
     val buttonsActivityControl: Boolean = false,
     val isSuccessful: Boolean = false
 )

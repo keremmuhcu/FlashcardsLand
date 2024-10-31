@@ -20,4 +20,8 @@ class FlashcardSetRepositoryImpl(
     override suspend fun deleteFlashcardSet(flashcardSet: FlashcardSet) {
         flashcardSetDao.deleteFlashcardSet(flashcardSet)
     }
+
+    override suspend fun editUpdatedAt(setId: Int, updatedAt: Long) {
+        flashcardSetDao.editUpdatedAt(setId, updatedAt)
+    }
 }

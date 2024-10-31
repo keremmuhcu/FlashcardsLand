@@ -1,5 +1,6 @@
-package com.keremmuhcu.flashcardsland.presentation.set_list.components
+package com.keremmuhcu.flashcardsland.presentation.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,9 +22,12 @@ import com.keremmuhcu.flashcardsland.R
 import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
 
 @Composable
-fun EmptySetListComponent(
-    modifier: Modifier,
-    onButtonClicked: () -> Unit
+fun EmptyListScreenComponent(
+    modifier: Modifier = Modifier,
+    onButtonClicked: () -> Unit,
+    @DrawableRes infoIcon: Int,
+    infoText: String,
+    buttonText: String,
 ) {
     Column(
         modifier = modifier,
@@ -32,12 +36,12 @@ fun EmptySetListComponent(
     ) {
         Icon(
             modifier = Modifier.size(48.dp),
-            imageVector = ImageVector.vectorResource(id = R.drawable.no_sets),
+            imageVector = ImageVector.vectorResource(infoIcon),
             contentDescription = ""
         )
         Text(
             modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
-            text = "Henüz bir set oluşturmadınız.\nDaha verimli çalışmak için \n hemen başla.",
+            text = infoText,
             fontFamily = gintoFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 22.sp,
@@ -47,7 +51,7 @@ fun EmptySetListComponent(
             modifier = Modifier.padding(top = 40.dp),
             onClick = { onButtonClicked() }
         ) {
-            Text(text = "Set oluştur", fontFamily = gintoFontFamily)
+            Text(text = buttonText, fontFamily = gintoFontFamily)
         }
     }
 }

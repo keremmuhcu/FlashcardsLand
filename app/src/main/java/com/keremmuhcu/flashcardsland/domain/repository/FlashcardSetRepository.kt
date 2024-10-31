@@ -8,4 +8,5 @@ interface FlashcardSetRepository {
     fun getAllFlashcardSetsWithCards(): Flow<List<FlashcardSetWithCards>>
     suspend fun upsertFlashcardSet(flashcardSet: FlashcardSet)
     suspend fun deleteFlashcardSet(flashcardSet: FlashcardSet)
+    suspend fun editUpdatedAt(setId: Int, updatedAt: Long)
 }

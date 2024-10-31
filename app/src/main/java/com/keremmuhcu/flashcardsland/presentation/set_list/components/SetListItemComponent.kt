@@ -33,13 +33,15 @@ import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
 
 @Composable
 fun SetListItemComponent(
-    content: @Composable () -> Unit = {}
+    content: @Composable () -> Unit = {},
+    setItemClicked:() -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp),
-        elevation = CardDefaults.cardElevation(16.dp)
+        elevation = CardDefaults.cardElevation(16.dp),
+        onClick = {setItemClicked() }
     ) {
         Column(
             modifier = Modifier

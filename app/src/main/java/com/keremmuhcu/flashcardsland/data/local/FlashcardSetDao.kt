@@ -5,6 +5,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import androidx.room.Dao
 import androidx.room.Transaction
+import androidx.room.Update
 import com.keremmuhcu.flashcardsland.domain.model.FlashcardSet
 import com.keremmuhcu.flashcardsland.domain.model.FlashcardSetWithCards
 import kotlinx.coroutines.flow.Flow
@@ -20,4 +21,7 @@ interface FlashcardSetDao {
 
     @Delete
     suspend fun deleteFlashcardSet(flashcardSet: FlashcardSet)
+
+    @Query("UPDATE flashcard_set SET updatedAt = :updatedAt WHERE setId = :setId")
+    suspend fun editUpdatedAt(setId: Int, updatedAt: Long)
 }
