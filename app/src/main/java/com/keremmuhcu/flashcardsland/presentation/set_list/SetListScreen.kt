@@ -11,6 +11,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.keremmuhcu.flashcardsland.presentation.components.DeleteDialog
 import com.keremmuhcu.flashcardsland.presentation.components.LoadingComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.AddOrEditSetDialog
@@ -29,12 +29,15 @@ import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListCar
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListItemComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListTopBarComponent
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
-import org.koin.androidx.compose.koinViewModel
+import kotlin.reflect.KFunction1
 
 @Composable
-fun SetListScreen() {
-    val setListViewModel = koinViewModel<SetListViewModel>()
-    val state = setListViewModel.state.collectAsStateWithLifecycle()
+fun SetListScreen(
+    navigateToAddOrEditFlashcardScreen: (Int) -> Unit,
+    state: State<SetListState>,
+    onEvent: (SetListEvent) -> Unit
+) {
+
     var isAddSetDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isUpdateSetDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -84,20 +87,23 @@ fun SetListScreen() {
                                 isDropdownMenuOpen = isDropdownMenuOpen,
                                 onDropdownClicked = { isDropdownMenuOpen = !isDropdownMenuOpen },
                                 onEditClicked = {
-                                    setListViewModel.onEvent(SetListEvent.ChangeSelectedSet(set))
-                                    setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(set.flashcardSet.title))
+                                    onEvent(SetListEvent.ChangeSelectedSet(set))
+                                    onEvent(SetListEvent.OnSetTitleTextFieldChange(set.flashcardSet.title))
                                     isUpdateSetDialogOpen = true
                                     isDropdownMenuOpen = !isDropdownMenuOpen
 
                                 },
                                 onDeleteClicked = {
-                                    setListViewModel.onEvent(SetListEvent.ChangeSelectedSet(set))
+                                    onEvent(SetListEvent.ChangeSelectedSet(set))
                                     isDeleteDialogOpen = true
                                     isDropdownMenuOpen = !isDropdownMenuOpen
                                 }
                             )
                             SetListCardItemButtonsComponent(
-                                isStudyButtonEnabled = set.cards.isNotEmpty()
+                                isStudyButtonEnabled = set.cards.isNotEmpty(),
+                                studyButtonClicked = {
+                                    navigateToAddOrEditFlashcardScreen(set.flashcardSet.setId!!)
+                                }
                             )
                         }
                     }
@@ -111,16 +117,16 @@ fun SetListScreen() {
             label = "Set Oluştur",
             setTitle = state.value.setTitleTextField,
             onTitleChange = {
-                setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(it))
+                onEvent(SetListEvent.OnSetTitleTextFieldChange(it))
             },
             onConfirm = {
-                setListViewModel.onEvent(SetListEvent.OnCreateSetButtonClicked)
+                onEvent(SetListEvent.OnCreateSetButtonClicked)
                 isAddSetDialogOpen = false
-                setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
+                onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
             },
             onCancel = {
                 isAddSetDialogOpen = false
-                setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
+                onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
             }
         )
 
@@ -129,16 +135,16 @@ fun SetListScreen() {
             label = "Seti Düzenle",
             setTitle = state.value.setTitleTextField,
             onTitleChange = {
-                setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(it))
+                onEvent(SetListEvent.OnSetTitleTextFieldChange(it))
             },
             onConfirm = {
-                setListViewModel.onEvent(SetListEvent.OnEditSetButtonClicked)
+                onEvent(SetListEvent.OnEditSetButtonClicked)
                 isUpdateSetDialogOpen = false
-                setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
+                onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
             },
             onCancel = {
                 isUpdateSetDialogOpen = false
-                setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
+                onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
             }
         )
 
@@ -147,7 +153,7 @@ fun SetListScreen() {
             text = "Kalıcı olarak silinir ve geri alınamaz.",
             isOpen = isDeleteDialogOpen,
             onConfirm = {
-                setListViewModel.onEvent(SetListEvent.OnDeleteSetButtonClicked)
+                onEvent(SetListEvent.OnDeleteSetButtonClicked)
                 isDeleteDialogOpen = false
             },
             onCancel = {
@@ -161,6 +167,6 @@ fun SetListScreen() {
 @Composable
 private fun SetListScreenPrev() {
     FlashcardsLandTheme {
-        SetListScreen()
+        //SetListScreen()
     }
 }

@@ -42,6 +42,20 @@ class SetListViewModel(
         }
     }
 
+    private fun loadSets() {
+        viewModelScope.launch {
+            flashcardSetRepository.getAllFlashcardSetsWithCards()
+                .collect { setsWithCards ->
+                    _state.update {
+                        it.copy(
+                            flashcardSets = setsWithCards,
+                            isLoading = false
+                        )
+                    }
+                }
+        }
+    }
+
     private fun updateSet() {
         viewModelScope.launch {
             _state.value.selectedSet?.let {
@@ -66,25 +80,11 @@ class SetListViewModel(
         }
     }
 
-    private fun loadSets() {
-        viewModelScope.launch {
-            flashcardSetRepository.getAllFlashcardSetsWithCards()
-                .collect { setsWithCards ->
-                    _state.update {
-                        it.copy(
-                            flashcardSets = setsWithCards,
-                            isLoading = false
-                        )
-                    }
-                }
-        }
-    }
-
     private fun createSet() {
         viewModelScope.launch {
             flashcardSetRepository.upsertFlashcardSet(
                 flashcardSet = FlashcardSet(
-                    title = state.value.setTitleTextField
+                    title = state.value.setTitleTextField.trim()
                 )
             )
         }

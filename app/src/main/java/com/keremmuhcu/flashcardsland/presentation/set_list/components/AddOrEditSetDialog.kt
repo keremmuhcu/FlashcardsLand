@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
@@ -18,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
@@ -34,7 +37,7 @@ fun AddOrEditSetDialog(
     var setTitleError by rememberSaveable { mutableStateOf<String?>(null) }
 
     setTitleError = when {
-        setTitle.isEmpty() -> "Set adı boş olamaz."
+        setTitle.isNotEmpty() && setTitle.isBlank() -> "Set adı boş olamaz."
         setTitle.length < 2 -> "Set adı çok kısa."
         setTitle.length > 45 -> "Set adı çok uzun."
         else -> null
@@ -65,14 +68,20 @@ fun AddOrEditSetDialog(
                             fontSize = 16.sp,
                             fontFamily = gintoFontFamily,
                         ),
-                        isError = setTitleError != null && setTitle.isNotBlank(),
+                        isError = setTitleError != null && setTitle.isNotEmpty(),
                         supportingText = {
                             Text(
-                                text = setTitleError.orEmpty(),
+                                text = if (setTitle.isEmpty()) "Set adı boş olamaz." else setTitleError ?: "",
                                 fontFamily = gintoFontFamily,
                                 fontWeight = FontWeight.Light
                             )
-                        }
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                defaultKeyboardAction(ImeAction.Done)
+                            }
+                        )
                     )
                 }
             },

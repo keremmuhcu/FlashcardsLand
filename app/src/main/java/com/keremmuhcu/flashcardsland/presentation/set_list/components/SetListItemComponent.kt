@@ -108,7 +108,8 @@ fun SetListCardItemContentComponent(
 
 @Composable
 fun SetListCardItemButtonsComponent(
-    isStudyButtonEnabled: Boolean
+    isStudyButtonEnabled: Boolean,
+    studyButtonClicked: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -117,7 +118,7 @@ fun SetListCardItemButtonsComponent(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         OutlinedButton(
-            onClick = {},
+            onClick = { studyButtonClicked() },
             modifier = Modifier
                 .height(35.dp)
                 .width(75.dp),
