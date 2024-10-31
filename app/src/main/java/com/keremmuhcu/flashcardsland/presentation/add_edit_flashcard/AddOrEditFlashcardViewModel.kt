@@ -2,7 +2,6 @@ package com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -97,40 +96,17 @@ class AddOrEditFlashcardViewModel(
                 isHardSwitchChecked = false,
                 isExampleSwitchChecked = false,
                 examplesTfList = listOf(""),
-                focusTermTextField = (it.focusTermTextField) + 1
+                isSuccessful = true
             )
         }
     }
 
     private fun addFlashcard() {
-        /*viewModelScope.launch {
-            println("Hello")
-            flashcardRepository.getFlashcardsBySetId(1)
-                .collect{ cards->
-                    cards.map {
-                        println(it.term)
-                    }
-
-                }
-        }*/
-        /*viewModelScope.launch {
-            flashcardRepository.upsertFlashcard(
-                flashcard = Flashcard(
-                    setId = 25,
-                    term = state.value.termTf,
-                    definition = state.value.definitionTf,
-                    isHard = state.value.isHardSwitchChecked,
-                    isStudied = false,
-                    isHardStudied = false,
-                    examples = if (state.value.isExampleSwitchChecked) state.value.examplesTfList else emptyList()
-                )
-            )
-        }*/
-        /*viewModelScope.launch {
-            _state.value.selectedSetId?.let {
+        viewModelScope.launch {
+            _state.value.selectedSetId?.let { setId->
                 flashcardRepository.upsertFlashcard(
                     flashcard = Flashcard(
-                        setId = 25,
+                        setId = setId,
                         term = state.value.termTf,
                         definition = state.value.definitionTf,
                         isHard = state.value.isHardSwitchChecked,
@@ -140,7 +116,8 @@ class AddOrEditFlashcardViewModel(
                     )
                 )
             }
-        }*/
+        }
+
     }
 
     fun setSelectedSetId(setId: Int) {

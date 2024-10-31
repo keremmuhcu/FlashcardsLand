@@ -11,5 +11,5 @@ data class AddOrEditFlashcardState(
     val selectedFlashcard: Flashcard? = null,
     val selectedSetId: Int? = null,
     val buttonsActivityControl: Boolean = false,
-    val focusTermTextField: Int = 0
+    val isSuccessful: Boolean = false
 )

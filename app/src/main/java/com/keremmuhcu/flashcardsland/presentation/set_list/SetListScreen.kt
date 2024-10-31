@@ -20,7 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.keremmuhcu.flashcardsland.presentation.components.DeleteDialog
+import com.keremmuhcu.flashcardsland.presentation.components.CustomAlertDialog
 import com.keremmuhcu.flashcardsland.presentation.components.LoadingComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.AddOrEditSetDialog
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.EmptySetListComponent
@@ -29,7 +29,6 @@ import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListCar
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListItemComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListTopBarComponent
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
-import kotlin.reflect.KFunction1
 
 @Composable
 fun SetListScreen(
@@ -148,7 +147,7 @@ fun SetListScreen(
             }
         )
 
-        DeleteDialog(
+        CustomAlertDialog(
             title = "Set silinecek",
             text = "Kalıcı olarak silinir ve geri alınamaz.",
             isOpen = isDeleteDialogOpen,

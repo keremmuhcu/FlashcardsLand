@@ -1,5 +1,7 @@
 package com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
@@ -17,13 +19,14 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.dp
 import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
 
 @Composable
 fun FlashcardTermDefinitionComponent(
     modifier: Modifier,
-    focusTermTextField:Int,
+    focusTermTextField: Boolean,
     termTextField: String,
     onTermTextFieldChange: (String) -> Unit,
     definitionTextField: String,
@@ -59,7 +62,6 @@ fun FlashcardTermDefinitionComponent(
             Text(
                 text = "Terim",
                 fontFamily = gintoFontFamily,
-                //fontSize = 14.sp
             )
         },
         textStyle = tfTextStyle,
@@ -72,7 +74,9 @@ fun FlashcardTermDefinitionComponent(
             )
         },
         keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Sentences,
             imeAction = ImeAction.Next,
+
         ),
         keyboardActions = KeyboardActions(
             onNext = {
@@ -80,6 +84,8 @@ fun FlashcardTermDefinitionComponent(
             }
         )
     )
+    
+    Spacer(modifier = Modifier.height(8.dp))
 
     OutlinedTextField(
         modifier = modifier, // fillmaxWidth
@@ -89,7 +95,6 @@ fun FlashcardTermDefinitionComponent(
             Text(
                 text = "Tanım",
                 fontFamily = gintoFontFamily,
-                fontSize = 14.sp
             )
         },
         textStyle = tfTextStyle,
@@ -101,6 +106,7 @@ fun FlashcardTermDefinitionComponent(
             )
         },
         keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Sentences,
             imeAction = ImeAction.Done,
         ),
         keyboardActions = KeyboardActions(

@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
 
 @Composable
-fun DeleteDialog(
+fun CustomAlertDialog(
     title: String,
     text: String,
     isOpen: Boolean,

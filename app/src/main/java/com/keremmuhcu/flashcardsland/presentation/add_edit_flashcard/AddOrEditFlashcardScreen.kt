@@ -1,22 +1,18 @@
 package com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,6 +23,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -35,14 +32,14 @@ import androidx.compose.ui.unit.sp
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.FlashcardTermDefinitionComponent
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.SwitchesComponent
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.flashcardExamplesList
+import com.keremmuhcu.flashcardsland.presentation.components.CustomAlertDialog
 import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
-import kotlin.math.min
 
 @Composable
 fun AddOrEditFlashcardScreen(
     state: State<AddOrEditFlashcardState>,
     onEvent: (AddOrEditFlashcardEvent) -> Unit,
-    onCloseButtonClicked: () -> Unit
+    onNavigateBack: () -> Unit
 ) {
 
     var buttonsActivityControl by remember { mutableStateOf(false) }
@@ -65,49 +62,54 @@ fun AddOrEditFlashcardScreen(
         }
     }
 
-    val columnScrollState = rememberScrollState()
-    val lazyListScrollState = rememberScrollState()
-
     Scaffold(
         topBar = {
             AddOrEditFlashcardTopBar(
                 buttonsActivityControl = buttonsActivityControl,
-                onCloseClicked = { onCloseButtonClicked() },
-                onSaveClicked = { onEvent(AddOrEditFlashcardEvent.OnSaveButtonClicked) }
+                onCloseClicked = {
+                    onNavigateBack()
+                },
+                onSaveClicked = {
+                    onEvent(AddOrEditFlashcardEvent.OnSaveButtonClicked)
+                    onNavigateBack()
+                }
             )
         }
     ) { innerPadding->
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(8.dp)
         ) {
-            FlashcardTermDefinitionComponent(
-                modifier = Modifier.fillMaxWidth(),
-                focusTermTextField = state.value.focusTermTextField,
-                termTextField = state.value.termTf,
-                onTermTextFieldChange = { onEvent(AddOrEditFlashcardEvent.OnTermTextFieldChange(it)) },
-                definitionTextField = state.value.definitionTf,
-                onDefinitionTextFieldChange = { onEvent(AddOrEditFlashcardEvent.OnDefinitionTextFieldChange(it)) },
-                tfTextStyle = TextStyle(
-                    fontFamily = gintoFontFamily,
-                    fontSize = 16.sp
-                )
-            )
-
-            SwitchesComponent(
-                switchState = state.value.isExampleSwitchChecked,
-                hardSwitchState = state.value.isHardSwitchChecked,
-                onSwitchChange = { onEvent(AddOrEditFlashcardEvent.OnExampleSwitchChange) },
-                onHardSwitchChange = { onEvent(AddOrEditFlashcardEvent.OnHardSwitchChange) }
-            )
             LazyColumn(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                item {
+                    FlashcardTermDefinitionComponent(
+                        modifier = Modifier.fillMaxWidth(),
+                        focusTermTextField = state.value.isSuccessful,
+                        termTextField = state.value.termTf,
+                        onTermTextFieldChange = { onEvent(AddOrEditFlashcardEvent.OnTermTextFieldChange(it)) },
+                        definitionTextField = state.value.definitionTf,
+                        onDefinitionTextFieldChange = { onEvent(AddOrEditFlashcardEvent.OnDefinitionTextFieldChange(it)) },
+                        tfTextStyle = TextStyle(
+                            fontFamily = gintoFontFamily,
+                            fontSize = 16.sp
+                        )
+                    )
+
+                    Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+                        SwitchesComponent(
+                            switchState = state.value.isExampleSwitchChecked,
+                            hardSwitchState = state.value.isHardSwitchChecked,
+                            onSwitchChange = { onEvent(AddOrEditFlashcardEvent.OnExampleSwitchChange) },
+                            onHardSwitchChange = { onEvent(AddOrEditFlashcardEvent.OnHardSwitchChange) }
+                        )
+                    }
+                }
+
                 if (state.value.isExampleSwitchChecked) { // exampleSwitchState
                     flashcardExamplesList(
                         examplesTextFields = state.value.examplesTfList,
@@ -121,12 +123,14 @@ fun AddOrEditFlashcardScreen(
                         addExampleIconClicked = { onEvent(AddOrEditFlashcardEvent.OnAddExampleIconClicked) }
                     )
                 }
+
             }
+
             if (state.value.selectedFlashcard == null) {
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(top = 40.dp),
                     onClick = { onEvent(AddOrEditFlashcardEvent.OnSaveAndNextButtonClicked)},
                     enabled = buttonsActivityControl
                 ) {
@@ -144,10 +148,13 @@ private fun AddOrEditFlashcardTopBar(
     onCloseClicked: () -> Unit,
     onSaveClicked: () -> Unit
 ) {
+    var alertControl by rememberSaveable { mutableStateOf(false) }
     TopAppBar(
         title = {},
         navigationIcon = {
-            IconButton(onClick = { onCloseClicked() }) {
+            IconButton(onClick = {
+                if (buttonsActivityControl) alertControl = true else onCloseClicked()
+            }) {
                 Icon(imageVector = Icons.Default.Close, contentDescription = "")
             }
         },
@@ -159,5 +166,16 @@ private fun AddOrEditFlashcardTopBar(
                 Text(text = "Kaydet", fontFamily = gintoFontFamily, fontSize = 16.sp)
             }
         }
+    )
+
+    CustomAlertDialog(
+        title = "Kaydedilmemiş değişiklikler",
+        text = "Şimdi çıkarsanız kart eklenmeyecek.",
+        isOpen = alertControl,
+        onConfirm = {
+            alertControl = false
+            onCloseClicked()
+        },
+        onCancel = { alertControl = false }
     )
 }

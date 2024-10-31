@@ -10,7 +10,6 @@ import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.AddOrEditFl
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.AddOrEditFlashcardViewModel
 import com.keremmuhcu.flashcardsland.presentation.set_list.SetListScreen
 import com.keremmuhcu.flashcardsland.presentation.set_list.SetListViewModel
-import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -41,7 +40,7 @@ fun MainNavigationGraph(navController: NavHostController) {
             AddOrEditFlashcardScreen(
                 state = state,
                 onEvent = addOrEditFlashcardViewModel::onEvent,
-                onCloseButtonClicked = {
+                onNavigateBack = {
                     navController.popBackStack()
                 }
             )
