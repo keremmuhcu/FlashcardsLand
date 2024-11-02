@@ -22,9 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.keremmuhcu.flashcardsland.R
@@ -33,9 +35,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 fun LazyListScope.flashcardExamplesList(
-    examplesTextFields: List<String>,
+    examplesTextFields: List<TextFieldValue>,
     listSize: Int,
-    onExampleTextFieldChange: (index: Int, value: String) -> Unit,
+    onExampleTextFieldChange: (index: Int, value: TextFieldValue) -> Unit,
     removeExampleIconClicked: (index: Int) -> Unit,
     addExampleIconClicked: () -> Unit
 ) {
@@ -76,13 +78,13 @@ fun LazyListScope.flashcardExamplesList(
 private fun ExampleListItem(
     index: Int,
     listSize: Int,
-    exampleTf: String,
-    onExampleTextFieldChange: (index: Int, value: String) -> Unit,
+    exampleTf: TextFieldValue,
+    onExampleTextFieldChange: (index: Int, value: TextFieldValue) -> Unit,
     removeExampleIconClicked: (index: Int) -> Unit,
     addExampleIconClicked: () -> Unit,
 ) {
     val exampleTfError = when {
-        exampleTf.isNotEmpty() && exampleTf.isBlank() -> "Örnek boş olamaz."
+        exampleTf.text.isNotEmpty() && exampleTf.text.isBlank() -> "Örnek boş olamaz."
         else -> null
     }
 
@@ -112,7 +114,7 @@ private fun ExampleListItem(
             isError = exampleTfError != null,
             supportingText = {
                 Text(
-                    text = if (exampleTfError != null || exampleTf.isEmpty()) "Örnek boş olamaz." else "",
+                    text = if (exampleTfError != null || exampleTf.text.isEmpty()) "Örnek boş olamaz." else "",
                     fontFamily = gintoFontFamily
                 )
             },

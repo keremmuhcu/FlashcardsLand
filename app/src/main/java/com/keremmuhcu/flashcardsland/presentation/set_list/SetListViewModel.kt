@@ -7,6 +7,7 @@ import com.keremmuhcu.flashcardsland.domain.model.FlashcardSet
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardSetRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -16,13 +17,19 @@ class SetListViewModel(
     private val flashcardSetRepository: FlashcardSetRepository
 ): ViewModel() {
     private val _state = MutableStateFlow(SetListState())
-    val state = _state
-        .onStart { loadSets() }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            SetListState()
+    val state = combine(
+        _state,
+        flashcardSetRepository.getAllFlashcardSetsWithCards()
+    ) { state, setsWithCards ->
+        state.copy(
+            flashcardSets = setsWithCards,
+            isLoading = false
         )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = SetListState()
+    )
 
     fun onEvent(event: SetListEvent) {
         when (event) {
@@ -42,20 +49,6 @@ class SetListViewModel(
         }
     }
 
-    private fun loadSets() {
-        viewModelScope.launch {
-            flashcardSetRepository.getAllFlashcardSetsWithCards()
-                .collect { setsWithCards ->
-                    _state.update {
-                        it.copy(
-                            flashcardSets = setsWithCards,
-                            isLoading = false
-                        )
-                    }
-                }
-        }
-    }
-
     private fun updateSet() {
         viewModelScope.launch {
             _state.value.selectedSet?.let {
@@ -63,7 +56,7 @@ class SetListViewModel(
                 flashcardSetRepository.upsertFlashcardSet(
                     flashcardSet = FlashcardSet(
                         setId = set.setId,
-                        title = state.value.setTitleTextField,
+                        title = state.value.setTitleTextField.text.trim(),
                         createdAt = set.createdAt,
                         updatedAt = System.currentTimeMillis()
                     )
@@ -84,7 +77,7 @@ class SetListViewModel(
         viewModelScope.launch {
             flashcardSetRepository.upsertFlashcardSet(
                 flashcardSet = FlashcardSet(
-                    title = state.value.setTitleTextField.trim()
+                    title = state.value.setTitleTextField.text.trim()
                 )
             )
         }

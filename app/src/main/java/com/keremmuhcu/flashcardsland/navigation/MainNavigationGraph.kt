@@ -26,7 +26,7 @@ fun MainNavigationGraph(navController: NavHostController) {
             val state = setListViewModel.state.collectAsStateWithLifecycle()
 
             SetListScreen(
-                state = state,
+                state = state.value,
                 onEvent = setListViewModel::onEvent,
                 navigateToAddOrEditFlashcardScreen = { setId->
                     navController.navigate(Route.AddOrEditFlashcardScreenRoute(setId))
@@ -38,19 +38,13 @@ fun MainNavigationGraph(navController: NavHostController) {
         }
 
         composable<Route.AddOrEditFlashcardScreenRoute> {
-            val args = it.toRoute<Route.AddOrEditFlashcardScreenRoute>()
-            val setId = args.setId
+            //val args = it.toRoute<Route.AddOrEditFlashcardScreenRoute>()
+
             val addOrEditFlashcardViewModel = koinViewModel<AddOrEditFlashcardViewModel>()
             val state = addOrEditFlashcardViewModel.state.collectAsStateWithLifecycle()
 
-            LaunchedEffect(Unit) {
-                addOrEditFlashcardViewModel.setSelectedSetId(setId)
-                args.flashcardId?.let { id->
-                    addOrEditFlashcardViewModel.setSelectedFlashcard(id)
-                }
-            }
             AddOrEditFlashcardScreen(
-                state = state,
+                state = state.value,
                 onEvent = addOrEditFlashcardViewModel::onEvent,
                 onNavigateBack = {
                     navController.navigateUp()
@@ -62,14 +56,10 @@ fun MainNavigationGraph(navController: NavHostController) {
             val args = it.toRoute<Route.FlashcardsScreenRoute>()
 
             val setId = args.setId
-            val setTitle = args.setTitle
 
             val flashcardsViewModel = koinViewModel<FlashcardsViewModel>()
             val state = flashcardsViewModel.state.collectAsStateWithLifecycle()
 
-            LaunchedEffect(Unit) {
-                flashcardsViewModel.loadData(setId = setId, setTitle = setTitle)
-            }
 
             FlashcardsScreen(
                 state = state.value,

@@ -13,14 +13,20 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
@@ -29,20 +35,24 @@ import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
 fun AddOrEditSetDialog(
     isOpen: Boolean,
     label: String,
-    setTitle: String,
-    onTitleChange: (String) -> Unit,
+    setTitle: TextFieldValue,
+    onTitleChange: (TextFieldValue) -> Unit,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
 ) {
     var setTitleError by rememberSaveable { mutableStateOf<String?>(null) }
+    val focusRequester = FocusRequester()
 
     setTitleError = when {
-        setTitle.isNotEmpty() && setTitle.isBlank() -> "Set adı boş olamaz."
-        setTitle.length < 2 -> "Set adı çok kısa."
-        setTitle.length > 45 -> "Set adı çok uzun."
+        setTitle.text.isNotEmpty() && setTitle.text.isBlank() -> "Set adı boş olamaz."
+        setTitle.text.length < 2 -> "Set adı çok kısa."
+        setTitle.text.length > 45 -> "Set adı çok uzun."
         else -> null
     }
     if (isOpen) {
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
         AlertDialog(
             title = {
                 Column(
@@ -54,6 +64,7 @@ fun AddOrEditSetDialog(
                         fontWeight = FontWeight.Medium,
                     )
                     TextField(
+                        modifier = Modifier.focusRequester(focusRequester),
                         value = setTitle,
                         onValueChange = {
                             onTitleChange(it)
@@ -68,15 +79,15 @@ fun AddOrEditSetDialog(
                             fontSize = 16.sp,
                             fontFamily = gintoFontFamily,
                         ),
-                        isError = setTitleError != null && setTitle.isNotEmpty(),
+                        isError = setTitleError != null && setTitle.text.isNotEmpty(),
                         supportingText = {
                             Text(
-                                text = if (setTitle.isEmpty()) "Set adı boş olamaz." else setTitleError ?: "",
+                                text = if (setTitle.text.isEmpty()) "Set adı boş olamaz." else setTitleError ?: "",
                                 fontFamily = gintoFontFamily,
                                 fontWeight = FontWeight.Light
                             )
                         },
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, capitalization = KeyboardCapitalization.Sentences),
                         keyboardActions = KeyboardActions(
                             onDone = {
                                 defaultKeyboardAction(ImeAction.Done)

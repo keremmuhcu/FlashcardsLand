@@ -1,5 +1,6 @@
 package com.keremmuhcu.flashcardsland.presentation.set_list.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -19,6 +20,7 @@ fun SetListCardItemOptionsDropdownComponent(
     onEditItemClicked:() -> Unit,
     onDeleteItemClicked:() -> Unit
 ) {
+    val deleteColors = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.error
     DropdownMenu(
         expanded = isExpanded, onDismissRequest = { onDismissAction() },
     ) {
@@ -35,10 +37,10 @@ fun SetListCardItemOptionsDropdownComponent(
         HorizontalDivider()
         DropdownMenuItem(
             text = {
-                Text(text = "Sil", fontFamily = gintoFontFamily)
+                Text(text = "Sil", fontFamily = gintoFontFamily, color = deleteColors)
             },
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "", tint = MaterialTheme.colorScheme.errorContainer)
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "", tint = deleteColors)
             },
             onClick = { onDeleteItemClicked() }
         )

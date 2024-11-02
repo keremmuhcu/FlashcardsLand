@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.FlashcardTermDefinitionComponent
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.SwitchesComponent
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.flashcardExamplesList
@@ -44,22 +45,32 @@ import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun AddOrEditFlashcardScreen(
-    state: State<AddOrEditFlashcardState>,
+    state: AddOrEditFlashcardState,
     onEvent: (AddOrEditFlashcardEvent) -> Unit,
     onNavigateBack: () -> Unit
 ) {
 
     val buttonsActivityControl by derivedStateOf {
-        state.value.termTf.isNotBlank() && state.value.definitionTf.isNotBlank()
-                && (!state.value.isExampleSwitchChecked || state.value.examplesTfList.all {
-            it.isNotBlank()
+        state.termTf.text.isNotBlank() && state.definitionTf.text.isNotBlank()
+                && (!state.isExampleSwitchChecked || state.examplesTfList.all {
+            it.text.isNotBlank()
         })
+    }
+
+    val isThereAnyChanges by derivedStateOf {
+        state.selectedFlashcard?.let {
+            it.term != state.termTf.text
+                    || it.definition != state.definitionTf.text
+                    || it.examples != state.examplesTfList.map {tf-> tf.text }
+                    || it.isHard != state.isHardSwitchChecked
+        }
     }
 
     Scaffold(
         topBar = {
             AddOrEditFlashcardTopBar(
                 buttonsActivityControl = buttonsActivityControl,
+                isThereAnyChanges = isThereAnyChanges,
                 onCloseClicked = {
                     onNavigateBack()
                 },
@@ -71,7 +82,7 @@ fun AddOrEditFlashcardScreen(
                     onEvent(AddOrEditFlashcardEvent.OnDeleteButtonClicked)
                     onNavigateBack()
                 },
-                showDeleteButton = state.value.selectedFlashcard != null
+                showDeleteButton = state.selectedFlashcard != null
             )
         }
     ) { innerPadding ->
@@ -88,8 +99,8 @@ fun AddOrEditFlashcardScreen(
                 item {
                     FlashcardTermDefinitionComponent(
                         modifier = Modifier.fillMaxWidth(),
-                        focusTermTextField = state.value.isSuccessful,
-                        termTextField = state.value.termTf,
+                        focusTermTextField = state.isSuccessful,
+                        termTextField = state.termTf,
                         onTermTextFieldChange = {
                             onEvent(
                                 AddOrEditFlashcardEvent.OnTermTextFieldChange(
@@ -97,7 +108,7 @@ fun AddOrEditFlashcardScreen(
                                 )
                             )
                         },
-                        definitionTextField = state.value.definitionTf,
+                        definitionTextField = state.definitionTf,
                         onDefinitionTextFieldChange = {
                             onEvent(
                                 AddOrEditFlashcardEvent.OnDefinitionTextFieldChange(
@@ -113,18 +124,18 @@ fun AddOrEditFlashcardScreen(
 
                     Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
                         SwitchesComponent(
-                            switchState = state.value.isExampleSwitchChecked,
-                            hardSwitchState = state.value.isHardSwitchChecked,
+                            switchState = state.isExampleSwitchChecked,
+                            hardSwitchState = state.isHardSwitchChecked,
                             onSwitchChange = { onEvent(AddOrEditFlashcardEvent.OnExampleSwitchChange) },
                             onHardSwitchChange = { onEvent(AddOrEditFlashcardEvent.OnHardSwitchChange) }
                         )
                     }
                 }
 
-                if (state.value.isExampleSwitchChecked) { // exampleSwitchState
+                if (state.isExampleSwitchChecked) { // exampleSwitchState
                     flashcardExamplesList(
-                        examplesTextFields = state.value.examplesTfList,
-                        listSize = state.value.examplesTfList.size,
+                        examplesTextFields = state.examplesTfList,
+                        listSize = state.examplesTfList.size,
                         onExampleTextFieldChange = { index, text ->
                             onEvent(AddOrEditFlashcardEvent.OnExampleTextFieldChange(index, text))
                         },
@@ -134,10 +145,10 @@ fun AddOrEditFlashcardScreen(
                         addExampleIconClicked = { onEvent(AddOrEditFlashcardEvent.OnAddExampleIconClicked) }
                     )
                 }
-
             }
 
-            if (state.value.selectedFlashcard == null) {
+
+            if (state.selectedFlashcard == null) {
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -156,6 +167,7 @@ fun AddOrEditFlashcardScreen(
 @Composable
 private fun AddOrEditFlashcardTopBar(
     buttonsActivityControl: Boolean,
+    isThereAnyChanges: Boolean?,
     onCloseClicked: () -> Unit,
     onSaveClicked: () -> Unit,
     onDeleteClicked: () -> Unit,
@@ -166,9 +178,11 @@ private fun AddOrEditFlashcardTopBar(
         title = {},
         navigationIcon = {
             IconButton(onClick = {
-                if (buttonsActivityControl) {
+                if (isThereAnyChanges?.let { it && buttonsActivityControl } ?: buttonsActivityControl) {
                     alertControl["back"] = true
-                }else{onCloseClicked()}
+                } else {
+                    onCloseClicked()
+                }
 
             }) {
                 Icon(imageVector = Icons.Default.Close, contentDescription = "")
@@ -198,7 +212,7 @@ private fun AddOrEditFlashcardTopBar(
 
     CustomAlertDialog(
         title = "Kaydedilmemiş değişiklikler",
-        text = "Şimdi çıkarsanız kart eklenmeyecek.",
+        text = "Şimdi çıkarsanız kart" + if(isThereAnyChanges!=null) " düzenlenmeyecek." else " eklenmeyecek.",
         isOpen = alertControl["back"]!!,
         onConfirm = {
             alertControl["back"] = false

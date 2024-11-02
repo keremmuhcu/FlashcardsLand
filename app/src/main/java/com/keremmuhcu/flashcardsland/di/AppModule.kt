@@ -32,8 +32,9 @@ val repositoryModule = module {
 }
 val viewModelModule = module {
     viewModel { SetListViewModel(get()) }
-    viewModel { AddOrEditFlashcardViewModel(get()) }
-    viewModel { FlashcardsViewModel(get()) }
+    viewModel { AddOrEditFlashcardViewModel(get(), get()) }
+    viewModel { FlashcardsViewModel(get(),get()) }
 }
+
 
 val appModule = listOf(databaseModule, repositoryModule, viewModelModule)

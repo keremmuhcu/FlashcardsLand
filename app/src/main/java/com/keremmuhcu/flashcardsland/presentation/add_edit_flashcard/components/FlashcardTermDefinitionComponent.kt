@@ -29,10 +29,10 @@ import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
 fun FlashcardTermDefinitionComponent(
     modifier: Modifier,
     focusTermTextField: Boolean,
-    termTextField: String,
-    onTermTextFieldChange: (String) -> Unit,
-    definitionTextField: String,
-    onDefinitionTextFieldChange: (String) -> Unit,
+    termTextField: TextFieldValue,
+    onTermTextFieldChange: (TextFieldValue) -> Unit,
+    definitionTextField: TextFieldValue,
+    onDefinitionTextFieldChange: (TextFieldValue) -> Unit,
     tfTextStyle: TextStyle
 ) {
     var termTfError by rememberSaveable { mutableStateOf<String?>(null) }
@@ -44,19 +44,21 @@ fun FlashcardTermDefinitionComponent(
     }
 
     termTfError = when {
-        termTextField.isNotEmpty() && termTextField.isBlank() -> "Terim boş olamaz"
+        termTextField.text.isNotEmpty() && termTextField.text.isBlank() -> "Terim boş olamaz"
         else -> null
     }
 
     definitionTfError = when {
-        definitionTextField.isNotEmpty() && definitionTextField.isBlank() -> "Tanım boş olamaz."
+        definitionTextField.text.isNotEmpty() && definitionTextField.text.isBlank() -> "Tanım boş olamaz."
         else -> null
     }
 
     OutlinedTextField(
         modifier = modifier.focusRequester(focusRequester),
         value = termTextField,
-        onValueChange = { onTermTextFieldChange(it) },
+        onValueChange = {
+            onTermTextFieldChange(it)
+        },
         label = {
             Text(
                 text = "Terim",
@@ -67,7 +69,7 @@ fun FlashcardTermDefinitionComponent(
         isError = termTfError != null,
         supportingText = {
             Text(
-                text = if (termTfError != null || termTextField.isEmpty()) "Terim boş olamaz." else "",
+                text = if (termTfError != null || termTextField.text.isEmpty()) "Terim boş olamaz." else "",
                 fontFamily = gintoFontFamily,
                 fontWeight = FontWeight.Light
             )
@@ -100,7 +102,7 @@ fun FlashcardTermDefinitionComponent(
         isError = definitionTfError != null,
         supportingText = {
             Text(
-                text = if (definitionTfError != null || definitionTextField.isEmpty()) "Tanım boş olamaz." else "",
+                text = if (definitionTfError != null || definitionTextField.text.isEmpty()) "Tanım boş olamaz." else "",
                 fontFamily = gintoFontFamily,
             )
         },

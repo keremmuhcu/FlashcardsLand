@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.keremmuhcu.flashcardsland.R
@@ -34,7 +36,7 @@ import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
 @Composable
 fun SetListScreen(
     navigateToAddOrEditFlashcardScreen: (Int) -> Unit,
-    state: State<SetListState>,
+    state: SetListState,
     onEvent: (SetListEvent) -> Unit,
     navigateToFlashcardsScreen: (Int, String) -> Unit
 ) {
@@ -46,7 +48,7 @@ fun SetListScreen(
     Scaffold(
         topBar = { SetListTopBarComponent() },
         floatingActionButton = {
-            if(state.value.flashcardSets.isNotEmpty()) {
+            if(state.flashcardSets.isNotEmpty()) {
                 FloatingActionButton(
                     onClick = {
                         isAddSetDialogOpen = true
@@ -60,7 +62,7 @@ fun SetListScreen(
             }
         }
     ) { innerPadding ->
-        if(state.value.isLoading) {
+        if(state.isLoading) {
             LoadingComponent()
         } else {
             val modifier = Modifier
@@ -68,7 +70,7 @@ fun SetListScreen(
                 .padding(innerPadding)
                 .padding(16.dp)
 
-            if (state.value.flashcardSets.isEmpty()) {
+            if (state.flashcardSets.isEmpty()) {
                 EmptyListScreenComponent(
                     modifier = modifier,
                     onButtonClicked = {
@@ -83,7 +85,7 @@ fun SetListScreen(
                     modifier = modifier,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(state.value.flashcardSets) { set->
+                    items(state.flashcardSets) { set->
                         var isDropdownMenuOpen by remember { mutableStateOf(false) }
                         SetListItemComponent(
                             setItemClicked = {
@@ -96,7 +98,9 @@ fun SetListScreen(
                                     onDropdownClicked = { isDropdownMenuOpen = !isDropdownMenuOpen },
                                     onEditClicked = {
                                         onEvent(SetListEvent.ChangeSelectedSet(set))
-                                        onEvent(SetListEvent.OnSetTitleTextFieldChange(set.flashcardSet.title))
+                                        onEvent(SetListEvent.OnSetTitleTextFieldChange(
+                                            TextFieldValue(set.flashcardSet.title, TextRange(set.flashcardSet.title.length))
+                                        ))
                                         isUpdateSetDialogOpen = true
                                         isDropdownMenuOpen = !isDropdownMenuOpen
 
@@ -124,42 +128,42 @@ fun SetListScreen(
         AddOrEditSetDialog(
             isOpen = isAddSetDialogOpen,
             label = "Set Oluştur",
-            setTitle = state.value.setTitleTextField,
+            setTitle = state.setTitleTextField,
             onTitleChange = {
                 onEvent(SetListEvent.OnSetTitleTextFieldChange(it))
             },
             onConfirm = {
                 onEvent(SetListEvent.OnCreateSetButtonClicked)
                 isAddSetDialogOpen = false
-                onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
+                onEvent(SetListEvent.OnSetTitleTextFieldChange(TextFieldValue("")))
             },
             onCancel = {
                 isAddSetDialogOpen = false
-                onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
+                onEvent(SetListEvent.OnSetTitleTextFieldChange(TextFieldValue("")))
             }
         )
 
         AddOrEditSetDialog(
             isOpen = isUpdateSetDialogOpen,
             label = "Seti Düzenle",
-            setTitle = state.value.setTitleTextField,
+            setTitle = state.setTitleTextField,
             onTitleChange = {
                 onEvent(SetListEvent.OnSetTitleTextFieldChange(it))
             },
             onConfirm = {
                 onEvent(SetListEvent.OnEditSetButtonClicked)
                 isUpdateSetDialogOpen = false
-                onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
+                onEvent(SetListEvent.OnSetTitleTextFieldChange(TextFieldValue("")))
             },
             onCancel = {
                 isUpdateSetDialogOpen = false
-                onEvent(SetListEvent.OnSetTitleTextFieldChange(""))
+                onEvent(SetListEvent.OnSetTitleTextFieldChange(TextFieldValue("")))
             }
         )
 
         CustomAlertDialog(
             title = "Set silinecek",
-            text = "Kalıcı olarak silinir ve geri alınamaz.",
+            text = "İçindeki tüm kartlarla beraber silinir. Bu işlem geri alınamaz.",
             isOpen = isDeleteDialogOpen,
             onConfirm = {
                 onEvent(SetListEvent.OnDeleteSetButtonClicked)
