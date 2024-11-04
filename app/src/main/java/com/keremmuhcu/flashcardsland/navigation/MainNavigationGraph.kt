@@ -22,12 +22,7 @@ fun MainNavigationGraph(navController: NavHostController) {
         startDestination = Route.SetListScreenRoute
     ) {
         composable<Route.SetListScreenRoute> {
-            val setListViewModel = koinViewModel<SetListViewModel>()
-            val state = setListViewModel.state.collectAsStateWithLifecycle()
-
             SetListScreen(
-                state = state.value,
-                onEvent = setListViewModel::onEvent,
                 navigateToAddOrEditFlashcardScreen = { setId->
                     navController.navigate(Route.AddOrEditFlashcardScreenRoute(setId))
                 },
@@ -35,17 +30,11 @@ fun MainNavigationGraph(navController: NavHostController) {
                     navController.navigate(Route.FlashcardsScreenRoute(setId, setTitle))
                 }
             )
+
         }
 
         composable<Route.AddOrEditFlashcardScreenRoute> {
-            //val args = it.toRoute<Route.AddOrEditFlashcardScreenRoute>()
-
-            val addOrEditFlashcardViewModel = koinViewModel<AddOrEditFlashcardViewModel>()
-            val state = addOrEditFlashcardViewModel.state.collectAsStateWithLifecycle()
-
             AddOrEditFlashcardScreen(
-                state = state.value,
-                onEvent = addOrEditFlashcardViewModel::onEvent,
                 onNavigateBack = {
                     navController.navigateUp()
                 }
@@ -54,16 +43,9 @@ fun MainNavigationGraph(navController: NavHostController) {
 
         composable<Route.FlashcardsScreenRoute> {
             val args = it.toRoute<Route.FlashcardsScreenRoute>()
-
             val setId = args.setId
 
-            val flashcardsViewModel = koinViewModel<FlashcardsViewModel>()
-            val state = flashcardsViewModel.state.collectAsStateWithLifecycle()
-
-
             FlashcardsScreen(
-                state = state.value,
-                onEvent = flashcardsViewModel::onEvent,
                 onNavigateBack = {
                     navController.navigateUp()
                 },

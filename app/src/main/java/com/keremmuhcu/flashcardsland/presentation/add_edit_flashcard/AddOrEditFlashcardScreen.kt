@@ -35,20 +35,23 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.FlashcardTermDefinitionComponent
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.SwitchesComponent
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.flashcardExamplesList
 import com.keremmuhcu.flashcardsland.presentation.components.CustomAlertDialog
 import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun AddOrEditFlashcardScreen(
-    state: AddOrEditFlashcardState,
-    onEvent: (AddOrEditFlashcardEvent) -> Unit,
+    addOrEditFlashcardViewModel: AddOrEditFlashcardViewModel = koinViewModel<AddOrEditFlashcardViewModel>(),
+    //onEvent: (AddOrEditFlashcardEvent) -> Unit,
     onNavigateBack: () -> Unit
 ) {
+    val state by addOrEditFlashcardViewModel.state.collectAsStateWithLifecycle()
 
     val buttonsActivityControl by derivedStateOf {
         state.termTf.text.isNotBlank() && state.definitionTf.text.isNotBlank()
@@ -75,89 +78,104 @@ fun AddOrEditFlashcardScreen(
                     onNavigateBack()
                 },
                 onSaveClicked = {
-                    onEvent(AddOrEditFlashcardEvent.OnSaveButtonClicked)
+                    addOrEditFlashcardViewModel.onEvent(AddOrEditFlashcardEvent.OnSaveButtonClicked)
                     onNavigateBack()
                 },
                 onDeleteClicked = {
-                    onEvent(AddOrEditFlashcardEvent.OnDeleteButtonClicked)
+                    addOrEditFlashcardViewModel.onEvent(AddOrEditFlashcardEvent.OnDeleteButtonClicked)
                     onNavigateBack()
                 },
                 showDeleteButton = state.selectedFlashcard != null
             )
         }
     ) { innerPadding ->
-        Column(
+        AddOrEditFlashcardScreenContent(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(8.dp)
+                .padding(8.dp),
+            state = state,
+            onEvent = addOrEditFlashcardViewModel::onEvent,
+            buttonsActivityControl = buttonsActivityControl
+        )
+    }
+}
+
+@Composable
+fun AddOrEditFlashcardScreenContent(
+    modifier: Modifier = Modifier,
+    state: AddOrEditFlashcardState,
+    onEvent: (AddOrEditFlashcardEvent) -> Unit,
+    buttonsActivityControl: Boolean
+) {
+    Column(
+        modifier = modifier
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                item {
-                    FlashcardTermDefinitionComponent(
-                        modifier = Modifier.fillMaxWidth(),
-                        focusTermTextField = state.isSuccessful,
-                        termTextField = state.termTf,
-                        onTermTextFieldChange = {
-                            onEvent(
-                                AddOrEditFlashcardEvent.OnTermTextFieldChange(
-                                    it
-                                )
+            item {
+                FlashcardTermDefinitionComponent(
+                    modifier = Modifier.fillMaxWidth(),
+                    focusTermTextField = state.isSuccessful,
+                    termTextField = state.termTf,
+                    onTermTextFieldChange = {
+                        onEvent(
+                            AddOrEditFlashcardEvent.OnTermTextFieldChange(
+                                it
                             )
-                        },
-                        definitionTextField = state.definitionTf,
-                        onDefinitionTextFieldChange = {
-                            onEvent(
-                                AddOrEditFlashcardEvent.OnDefinitionTextFieldChange(
-                                    it
-                                )
-                            )
-                        },
-                        tfTextStyle = TextStyle(
-                            fontFamily = gintoFontFamily,
-                            fontSize = 16.sp
                         )
+                    },
+                    definitionTextField = state.definitionTf,
+                    onDefinitionTextFieldChange = {
+                        onEvent(
+                            AddOrEditFlashcardEvent.OnDefinitionTextFieldChange(
+                                it
+                            )
+                        )
+                    },
+                    tfTextStyle = TextStyle(
+                        fontFamily = gintoFontFamily,
+                        fontSize = 16.sp
                     )
+                )
 
-                    Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-                        SwitchesComponent(
-                            switchState = state.isExampleSwitchChecked,
-                            hardSwitchState = state.isHardSwitchChecked,
-                            onSwitchChange = { onEvent(AddOrEditFlashcardEvent.OnExampleSwitchChange) },
-                            onHardSwitchChange = { onEvent(AddOrEditFlashcardEvent.OnHardSwitchChange) }
-                        )
-                    }
-                }
-
-                if (state.isExampleSwitchChecked) { // exampleSwitchState
-                    flashcardExamplesList(
-                        examplesTextFields = state.examplesTfList,
-                        listSize = state.examplesTfList.size,
-                        onExampleTextFieldChange = { index, text ->
-                            onEvent(AddOrEditFlashcardEvent.OnExampleTextFieldChange(index, text))
-                        },
-                        removeExampleIconClicked = { index ->
-                            onEvent(AddOrEditFlashcardEvent.OnDeleteExampleIconClicked(index))
-                        },
-                        addExampleIconClicked = { onEvent(AddOrEditFlashcardEvent.OnAddExampleIconClicked) }
+                Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+                    SwitchesComponent(
+                        switchState = state.isExampleSwitchChecked,
+                        hardSwitchState = state.isHardSwitchChecked,
+                        onSwitchChange = { onEvent(AddOrEditFlashcardEvent.OnExampleSwitchChange) },
+                        onHardSwitchChange = { onEvent(AddOrEditFlashcardEvent.OnHardSwitchChange) }
                     )
                 }
             }
 
+            if (state.isExampleSwitchChecked) { // exampleSwitchState
+                flashcardExamplesList(
+                    examplesTextFields = state.examplesTfList,
+                    listSize = state.examplesTfList.size,
+                    onExampleTextFieldChange = { index, text ->
+                        onEvent(AddOrEditFlashcardEvent.OnExampleTextFieldChange(index, text))
+                    },
+                    removeExampleIconClicked = { index ->
+                        onEvent(AddOrEditFlashcardEvent.OnDeleteExampleIconClicked(index))
+                    },
+                    addExampleIconClicked = { onEvent(AddOrEditFlashcardEvent.OnAddExampleIconClicked) }
+                )
+            }
+        }
 
-            if (state.selectedFlashcard == null) {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 40.dp),
-                    onClick = { onEvent(AddOrEditFlashcardEvent.OnSaveAndNextButtonClicked) },
-                    enabled = buttonsActivityControl
-                ) {
-                    Text(text = "YENİ KART EKLE", fontFamily = gintoFontFamily, fontSize = 16.sp)
-                }
+
+        if (state.selectedFlashcard == null) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 40.dp),
+                onClick = { onEvent(AddOrEditFlashcardEvent.OnSaveAndNextButtonClicked) },
+                enabled = buttonsActivityControl
+            ) {
+                Text(text = "YENİ KART EKLE", fontFamily = gintoFontFamily, fontSize = 16.sp)
             }
         }
     }

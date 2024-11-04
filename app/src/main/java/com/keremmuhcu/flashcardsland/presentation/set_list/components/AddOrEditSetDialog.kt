@@ -1,5 +1,6 @@
 package com.keremmuhcu.flashcardsland.presentation.set_list.components
 
+import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,14 +14,18 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,7 +34,11 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddOrEditSetDialog(
@@ -40,8 +49,10 @@ fun AddOrEditSetDialog(
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
     var setTitleError by rememberSaveable { mutableStateOf<String?>(null) }
-    val focusRequester = FocusRequester()
+    var textFieldLoaded by remember { mutableStateOf(false) }
+
 
     setTitleError = when {
         setTitle.text.isNotEmpty() && setTitle.text.isBlank() -> "Set adı boş olamaz."
@@ -49,10 +60,8 @@ fun AddOrEditSetDialog(
         setTitle.text.length > 45 -> "Set adı çok uzun."
         else -> null
     }
+
     if (isOpen) {
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
-        }
         AlertDialog(
             title = {
                 Column(
@@ -64,7 +73,15 @@ fun AddOrEditSetDialog(
                         fontWeight = FontWeight.Medium,
                     )
                     TextField(
-                        modifier = Modifier.focusRequester(focusRequester),
+                        modifier = Modifier
+                            .focusRequester(focusRequester)
+                            .onGloballyPositioned {
+                                if(!textFieldLoaded) {
+                                    textFieldLoaded = true
+                                    focusRequester.requestFocus()
+                                }
+                            }
+                        ,
                         value = setTitle,
                         onValueChange = {
                             onTitleChange(it)
@@ -118,5 +135,7 @@ fun AddOrEditSetDialog(
                 }
             }
         )
+
+
     }
 }

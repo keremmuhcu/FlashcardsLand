@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.keremmuhcu.flashcardsland.R
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.presentation.components.EmptyListScreenComponent
@@ -56,14 +57,15 @@ import com.keremmuhcu.flashcardsland.presentation.flashcards.components.Segmente
 import com.keremmuhcu.flashcardsland.presentation.flashcards.components.flashcards
 import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun FlashcardsScreen(
-    state: FlashcardsState,
-    onEvent: (FlashcardsEvent) -> Unit,
+    flashcardsViewModel: FlashcardsViewModel = koinViewModel<FlashcardsViewModel>(),
     onNavigateBack: () -> Unit,
     navigateToAddOrEditFlashcardScreen: (Int?) -> Unit,
 ) {
+    val state by flashcardsViewModel.state.collectAsStateWithLifecycle()
     val tabItems = listOf("Hepsi", "Zorlar")
     val isFabExpanded by remember {
         derivedStateOf {
@@ -77,16 +79,16 @@ fun FlashcardsScreen(
                 title = state.selectedSetTitle,
                 isSearchActive = state.searchBarActive,
                 onSearchBarActive = {
-                    onEvent(FlashcardsEvent.OnSearchIconClicked(it))
+                    flashcardsViewModel.onEvent(FlashcardsEvent.OnSearchIconClicked(it))
                 },
                 searchBarValue = state.searchBarTextTf,
                 onSearchBarTfChange = {
-                    onEvent(FlashcardsEvent.OnSearchBarTfChange(it))
+                    flashcardsViewModel.onEvent(FlashcardsEvent.OnSearchBarTfChange(it))
                 },
                 onSearch = {
                     if (state.searchBarTextTf.text.isBlank()) {
-                        onEvent(FlashcardsEvent.OnSearchIconClicked(false))
-                        onEvent(FlashcardsEvent.OnSearchBarTfChange(TextFieldValue("")))
+                        flashcardsViewModel.onEvent(FlashcardsEvent.OnSearchIconClicked(false))
+                        flashcardsViewModel.onEvent(FlashcardsEvent.OnSearchBarTfChange(TextFieldValue("")))
                     }
                 },
                 onNavigateBack = onNavigateBack
@@ -118,7 +120,7 @@ fun FlashcardsScreen(
                     .padding(16.dp),
                 state = state,
                 tabItems = tabItems,
-                onEvent = onEvent,
+                onEvent = flashcardsViewModel::onEvent,
                 onCardClicked = navigateToAddOrEditFlashcardScreen
             )
         }
