@@ -17,14 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -42,14 +39,15 @@ import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListCar
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListCardItemContentComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListItemComponent
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SetListScreen(
     setListViewModel: SetListViewModel = koinViewModel<SetListViewModel>(),
     navigateToAddOrEditFlashcardScreen: (Int) -> Unit,
-    navigateToFlashcardsScreen: (Int, String) -> Unit
+    navigateToFlashcardsScreen: (Int, String) -> Unit,
+    navigateToBasicStudyScreen: (Int) -> Unit
 ) {
     val state by setListViewModel.state.collectAsStateWithLifecycle()
 
@@ -91,32 +89,32 @@ fun SetListScreen(
                     buttonText = "Set oluştur"
                 )
             } else {
-                val focusRequester = remember { FocusRequester() }
                 SetListScreenContent(
                     modifier = modifier,
                     state = state,
                     onEvent = setListViewModel::onEvent,
                     navigateToFlashcardsScreen = navigateToFlashcardsScreen,
-                    navigateToAddOrEditFlashcardScreen = navigateToAddOrEditFlashcardScreen
-                )
-                AddOrEditSetDialog(
-                    isOpen = isAddSetDialogOpen,
-                    label = "Set Oluştur",
-                    setTitle = state.setTitleTextField,
-                    onTitleChange = {
-                        setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(it))
-                    },
-                    onConfirm = {
-                        setListViewModel.onEvent(SetListEvent.OnCreateSetButtonClicked)
-                        isAddSetDialogOpen = false
-                        setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(TextFieldValue("")))
-                    },
-                    onCancel = {
-                        isAddSetDialogOpen = false
-                        setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(TextFieldValue("")))
-                    }
+                    navigateToAddOrEditFlashcardScreen = navigateToAddOrEditFlashcardScreen,
+                    navigateToBasicStudyScreen = navigateToBasicStudyScreen
                 )
             }
+            AddOrEditSetDialog(
+                isOpen = isAddSetDialogOpen,
+                label = "Set Oluştur",
+                setTitle = state.setTitleTextField,
+                onTitleChange = {
+                    setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(it))
+                },
+                onConfirm = {
+                    setListViewModel.onEvent(SetListEvent.OnCreateSetButtonClicked)
+                    isAddSetDialogOpen = false
+                    setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(TextFieldValue("")))
+                },
+                onCancel = {
+                    isAddSetDialogOpen = false
+                    setListViewModel.onEvent(SetListEvent.OnSetTitleTextFieldChange(TextFieldValue("")))
+                }
+            )
         }
     }
 }
@@ -127,7 +125,8 @@ fun SetListScreenContent(
     state: SetListState,
     onEvent: (SetListEvent) -> Unit,
     navigateToFlashcardsScreen: (Int, String) -> Unit,
-    navigateToAddOrEditFlashcardScreen: (Int) -> Unit
+    navigateToAddOrEditFlashcardScreen: (Int) -> Unit,
+    navigateToBasicStudyScreen: (Int) -> Unit
 ) {
     var isUpdateSetDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -163,9 +162,12 @@ fun SetListScreenContent(
                         }
                     )
                     SetListCardItemButtonsComponent(
-                        isStudyButtonEnabled = set.cards.isNotEmpty(),
-                        studyButtonClicked = {
+                        isStudyButtonEnabled = set.cards.size > 4,
+                        addCardButtonClicked = {
                             navigateToAddOrEditFlashcardScreen(set.flashcardSet.setId!!)
+                        },
+                        studyButtonClicked = {
+                            navigateToBasicStudyScreen(set.flashcardSet.setId!!)
                         }
                     )
                 }
@@ -215,7 +217,7 @@ private fun SetListTopBarComponent() {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Setlerim",
-                fontFamily = gintoFontFamily,
+                fontFamily = openSansFontFamily,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center

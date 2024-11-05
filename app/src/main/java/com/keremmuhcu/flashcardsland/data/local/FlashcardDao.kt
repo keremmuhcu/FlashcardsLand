@@ -24,4 +24,10 @@ interface FlashcardDao {
 
     @Query("SELECT * FROM flashcard WHERE cardId = :cardId")
     suspend fun getFlashcardById(cardId: Int): Flashcard
+
+    @Query("SELECT * FROM flashcard WHERE setId = :setId AND isStudied = 0 ORDER BY RANDOM() LIMIT 10")
+    suspend fun getRandom10UnstudiedFlashcards(setId: Int): List<Flashcard>
+
+    @Query("SELECT COUNT(*) FROM flashcard WHERE setId = :setId AND isStudied = 0")
+    suspend fun getUnstudiedFlashcardsCount(setId: Int): Int
 }

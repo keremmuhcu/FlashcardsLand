@@ -8,13 +8,17 @@ import androidx.compose.ui.text.font.FontWeight
 import com.keremmuhcu.flashcardsland.R
 
 
-val gintoFontFamily = FontFamily(
-    Font(R.font.ginto_regular, FontWeight.Normal),
-    Font(R.font.ginto_regular_italic, FontWeight.Normal, FontStyle.Italic),
-    Font(R.font.ginto_light, FontWeight.Light),
-    Font(R.font.ginto_light_italic, FontWeight.Light, FontStyle.Italic),
-    Font(R.font.ginto_medium, FontWeight.Medium),
-    Font(R.font.ginto_bold, FontWeight.Bold)
+val openSansFontFamily = FontFamily(
+    Font(R.font.opensans_light, FontWeight.Light),
+    Font(R.font.opensans_light_italic, FontWeight.Light, FontStyle.Italic),
+    Font(R.font.opensans_regular, FontWeight.Normal),
+    Font(R.font.opensans_regular_italic, FontWeight.Normal, FontStyle.Italic),
+    Font(R.font.opensans_medium, FontWeight.Medium),
+    Font(R.font.opensans_medium_italic, FontWeight.Medium, FontStyle.Italic),
+    Font(R.font.opensans_semibold, FontWeight.SemiBold),
+    Font(R.font.opensans_semibold_italic, FontWeight.SemiBold, FontStyle.Italic),
+    Font(R.font.opensans_bold, FontWeight.Bold),
+    Font(R.font.opensans_bold_italic, FontWeight.Normal, FontStyle.Italic),
 )
 
 val AppTypography = Typography()

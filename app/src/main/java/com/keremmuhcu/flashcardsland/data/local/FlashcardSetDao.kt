@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FlashcardSetDao {
     @Transaction
-    @Query("SELECT * FROM flashcard_set")
+    @Query("SELECT * FROM flashcard_set ORDER BY updatedAt DESC")
     fun getAllFlashcardSetsWithCards(): Flow<List<FlashcardSetWithCards>>
 
     @Upsert

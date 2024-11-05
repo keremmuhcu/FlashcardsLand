@@ -15,4 +15,7 @@ sealed interface Route {
 
     @Serializable
     data class FlashcardsScreenRoute(val setId: Int, val setTitle: String)
+
+    @Serializable
+    data class BasicStudyScreenRoute(val setId: Int)
 }

@@ -1,6 +1,5 @@
 package com.keremmuhcu.flashcardsland.presentation.set_list.components
 
-import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,19 +13,15 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -34,11 +29,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
-import kotlinx.coroutines.launch
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 
 @Composable
 fun AddOrEditSetDialog(
@@ -69,7 +60,7 @@ fun AddOrEditSetDialog(
                 ) {
                     Text(
                         text = label,
-                        fontFamily = gintoFontFamily,
+                        fontFamily = openSansFontFamily,
                         fontWeight = FontWeight.Medium,
                     )
                     TextField(
@@ -89,18 +80,18 @@ fun AddOrEditSetDialog(
                         label = {
                             Text(
                                 text = "Set Adı",
-                                fontFamily = gintoFontFamily,
+                                fontFamily = openSansFontFamily,
                             )
                         },
                         textStyle = TextStyle(
                             fontSize = 16.sp,
-                            fontFamily = gintoFontFamily,
+                            fontFamily = openSansFontFamily,
                         ),
                         isError = setTitleError != null && setTitle.text.isNotEmpty(),
                         supportingText = {
                             Text(
                                 text = if (setTitle.text.isEmpty()) "Set adı boş olamaz." else setTitleError ?: "",
-                                fontFamily = gintoFontFamily,
+                                fontFamily = openSansFontFamily,
                                 fontWeight = FontWeight.Light
                             )
                         },
@@ -122,14 +113,14 @@ fun AddOrEditSetDialog(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     OutlinedButton(onClick = { onCancel() }) {
-                        Text(text = "İptal", fontFamily = gintoFontFamily)
+                        Text(text = "İptal", fontFamily = openSansFontFamily)
                     }
 
                     Button(
                         onClick = { onConfirm() },
                         enabled = setTitleError == null
                     ) {
-                        Text(text = "Tamam", fontFamily = gintoFontFamily)
+                        Text(text = "Tamam", fontFamily = openSansFontFamily)
                     }
 
                 }

@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -30,7 +29,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.keremmuhcu.flashcardsland.R
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -103,19 +102,19 @@ private fun ExampleListItem(
             label = {
                 Text(
                     text = "Örnek ${index + 1}",
-                    fontFamily = gintoFontFamily,
+                    fontFamily = openSansFontFamily,
                     //fontSize = 16.sp
                 )
             },
             textStyle = TextStyle(
-                fontFamily = gintoFontFamily,
+                fontFamily = openSansFontFamily,
                 fontSize = 16.sp
             ),
             isError = exampleTfError != null,
             supportingText = {
                 Text(
                     text = if (exampleTfError != null || exampleTf.text.isEmpty()) "Örnek boş olamaz." else "",
-                    fontFamily = gintoFontFamily
+                    fontFamily = openSansFontFamily
                 )
             },
             keyboardOptions = KeyboardOptions(

@@ -19,29 +19,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.FlashcardTermDefinitionComponent
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.SwitchesComponent
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.components.flashcardExamplesList
 import com.keremmuhcu.flashcardsland.presentation.components.CustomAlertDialog
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnrememberedMutableState")
@@ -136,7 +127,7 @@ fun AddOrEditFlashcardScreenContent(
                         )
                     },
                     tfTextStyle = TextStyle(
-                        fontFamily = gintoFontFamily,
+                        fontFamily = openSansFontFamily,
                         fontSize = 16.sp
                     )
                 )
@@ -175,7 +166,7 @@ fun AddOrEditFlashcardScreenContent(
                 onClick = { onEvent(AddOrEditFlashcardEvent.OnSaveAndNextButtonClicked) },
                 enabled = buttonsActivityControl
             ) {
-                Text(text = "YENİ KART EKLE", fontFamily = gintoFontFamily, fontSize = 16.sp)
+                Text(text = "YENİ KART EKLE", fontFamily = openSansFontFamily, fontSize = 16.sp)
             }
         }
     }
@@ -211,7 +202,7 @@ private fun AddOrEditFlashcardTopBar(
                 TextButton(onClick = { alertControl["delete"] = true }) {
                     Text(
                         text = "Sil",
-                        fontFamily = gintoFontFamily,
+                        fontFamily = openSansFontFamily,
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.error
                     )
@@ -222,7 +213,7 @@ private fun AddOrEditFlashcardTopBar(
                 onClick = { onSaveClicked() },
                 enabled = buttonsActivityControl
             ) {
-                Text(text = "Kaydet", fontFamily = gintoFontFamily, fontSize = 16.sp)
+                Text(text = "Kaydet", fontFamily = openSansFontFamily, fontSize = 16.sp)
             }
 
         }

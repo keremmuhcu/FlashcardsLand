@@ -30,4 +30,12 @@ class FlashcardRepositoryImpl(
     override suspend fun getFlashcardById(id: Int): Flashcard {
         return flashcardDao.getFlashcardById(id)
     }
+
+    override suspend fun getRandom10UnstudiedFlashcards(setId: Int): List<Flashcard> {
+        return flashcardDao.getRandom10UnstudiedFlashcards(setId = setId)
+    }
+
+    override suspend fun getUnstudiedFlashcardsCount(setId: Int): Int {
+        return flashcardDao.getUnstudiedFlashcardsCount(setId)
+    }
 }

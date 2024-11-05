@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.keremmuhcu.flashcardsland.domain.model.FlashcardSetWithCards
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 
 @Composable
 fun SetListItemComponent(
@@ -78,7 +78,7 @@ fun SetListCardItemContentComponent(
             Text(
                 modifier = Modifier.weight(1f),
                 text = set.flashcardSet.title,
-                fontFamily = gintoFontFamily,
+                fontFamily = openSansFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
             )
@@ -102,7 +102,7 @@ fun SetListCardItemContentComponent(
         }
         Text(
             text = subText,
-            fontFamily = gintoFontFamily,
+            fontFamily = openSansFontFamily,
             fontWeight = FontWeight.Light
         )
     }
@@ -111,6 +111,7 @@ fun SetListCardItemContentComponent(
 @Composable
 fun SetListCardItemButtonsComponent(
     isStudyButtonEnabled: Boolean,
+    addCardButtonClicked: () -> Unit,
     studyButtonClicked: () -> Unit
 ) {
     Row(
@@ -120,7 +121,7 @@ fun SetListCardItemButtonsComponent(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         OutlinedButton(
-            onClick = { studyButtonClicked() },
+            onClick = { addCardButtonClicked() },
             modifier = Modifier
                 .height(35.dp)
                 .width(75.dp),
@@ -128,12 +129,12 @@ fun SetListCardItemButtonsComponent(
         ) {
             Text(
                 text = "Ekle",
-                fontFamily = gintoFontFamily,
+                fontFamily = openSansFontFamily,
                 textAlign = TextAlign.Center
             )
         }
         Button(
-            onClick = {  },
+            onClick = { studyButtonClicked() },
             modifier = Modifier
                 .height(35.dp)
                 .width(75.dp),
@@ -142,7 +143,7 @@ fun SetListCardItemButtonsComponent(
         ) {
             Text(
                 text = "Çalış",
-                fontFamily = gintoFontFamily,
+                fontFamily = openSansFontFamily,
                 textAlign = TextAlign.Center
             )
         }

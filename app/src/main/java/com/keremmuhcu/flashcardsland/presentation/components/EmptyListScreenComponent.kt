@@ -18,8 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.keremmuhcu.flashcardsland.R
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 
 @Composable
 fun EmptyListScreenComponent(
@@ -42,7 +41,7 @@ fun EmptyListScreenComponent(
         Text(
             modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
             text = infoText,
-            fontFamily = gintoFontFamily,
+            fontFamily = openSansFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 22.sp,
             textAlign = TextAlign.Center
@@ -51,7 +50,7 @@ fun EmptyListScreenComponent(
             modifier = Modifier.padding(top = 40.dp),
             onClick = { onButtonClicked() }
         ) {
-            Text(text = buttonText, fontFamily = gintoFontFamily)
+            Text(text = buttonText, fontFamily = openSansFontFamily)
         }
     }
 }

@@ -11,11 +11,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -24,7 +21,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -35,13 +31,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -55,7 +48,7 @@ import com.keremmuhcu.flashcardsland.presentation.flashcards.components.Segmente
 import com.keremmuhcu.flashcardsland.presentation.flashcards.components.SearchBarComponent
 import com.keremmuhcu.flashcardsland.presentation.flashcards.components.SegmentedButtonItem
 import com.keremmuhcu.flashcardsland.presentation.flashcards.components.flashcards
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -98,7 +91,7 @@ fun FlashcardsScreen(
             ExtendedFloatingActionButton(
                 onClick = { navigateToAddOrEditFlashcardScreen(null) },
                 icon = { Icon(imageVector = Icons.Default.Add, contentDescription = "Kart Ekle") },
-                text = { Text(text = "Kart Ekle", fontFamily = gintoFontFamily)},
+                text = { Text(text = "Kart Ekle", fontFamily = openSansFontFamily)},
                 expanded = isFabExpanded
             )
         }
@@ -154,7 +147,7 @@ private fun FlashcardsContent(
                         }
                         onEvent(FlashcardsEvent.OnTabSelected(index))
                     },
-                    text = { Text(text = tab, fontFamily = gintoFontFamily) }
+                    text = { Text(text = tab, fontFamily = openSansFontFamily) }
                 )
             }
         }
@@ -260,7 +253,7 @@ private fun FlashcardsTopAppBar(
                     }
                     false -> Text(
                         text = title,
-                        fontFamily = gintoFontFamily
+                        fontFamily = openSansFontFamily
                     )
                 }
             }
@@ -290,7 +283,7 @@ private fun FlashcardsTopAppBar(
                             onSearchBarActive(false)
                             onSearchBarTfChange(TextFieldValue(""))
                         }) {
-                            Text(text = "İptal", fontFamily = gintoFontFamily, fontSize = 16.sp)
+                            Text(text = "İptal", fontFamily = openSansFontFamily, fontSize = 16.sp)
                         }
                     }
                     false -> {

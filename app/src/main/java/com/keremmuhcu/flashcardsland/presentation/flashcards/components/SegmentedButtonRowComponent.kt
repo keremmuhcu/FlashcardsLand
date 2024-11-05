@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 
 data class SegmentedButtonItem(
     val filter: String,
@@ -54,7 +54,7 @@ fun SegmentedButtonRowComponent(
                         count = segmentedButtonsList.size
                     )
                 ) {
-                    Text(text = "${button.filter}: ${button.filteredList.size}", fontFamily = gintoFontFamily)
+                    Text(text = "${button.filter}: ${button.filteredList.size}", fontFamily = openSansFontFamily)
                 }
             }
         }

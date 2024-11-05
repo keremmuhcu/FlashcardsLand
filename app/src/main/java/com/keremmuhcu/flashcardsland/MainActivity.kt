@@ -15,7 +15,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FlashcardsLandTheme {
-                //SetListScreen()
                 val navController = rememberNavController()
                 MainNavigationGraph(navController = navController)
                 //Deneme()

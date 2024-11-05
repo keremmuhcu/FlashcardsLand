@@ -4,7 +4,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import androidx.compose.ui.text.font.FontWeight
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 
 @Composable
 fun CustomAlertDialog(
@@ -17,15 +18,15 @@ fun CustomAlertDialog(
     if (isOpen) {
         AlertDialog(
             title = {
-                Text(text = title, fontFamily = gintoFontFamily)
+                Text(text = title, fontFamily = openSansFontFamily, fontWeight = FontWeight.SemiBold)
             },
             text = {
-                Text(text = text, fontFamily = gintoFontFamily)
+                Text(text = text, fontFamily = openSansFontFamily)
             },
             onDismissRequest = { onCancel() },
             confirmButton = {
                 TextButton(onClick = { onConfirm() }) {
-                    Text(text = "Tamam", fontFamily = gintoFontFamily)
+                    Text(text = "Tamam", fontFamily = openSansFontFamily)
                 }
                 /*Row(
                     modifier = Modifier
@@ -42,7 +43,7 @@ fun CustomAlertDialog(
             },
             dismissButton = {
                 TextButton(onClick = { onCancel() }) {
-                    Text(text = "İptal", fontFamily = gintoFontFamily)
+                    Text(text = "İptal", fontFamily = openSansFontFamily)
                 }
             }
         )

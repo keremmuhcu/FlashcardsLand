@@ -7,22 +7,27 @@ import com.keremmuhcu.flashcardsland.domain.model.FlashcardSetWithCards
 val set1FlashcardsList = listOf(
     Flashcard(
         setId = 1,
+        cardId = 1,
         term = "Hello",
         definition = "Merhaba",
         isStudied = false,
         isHard = false,
-        isHardStudied = false
+        isHardStudied = false,
+        examples = listOf("Bu birinci kartın 1. örneği", "Bu birinci kartın 2. örneği", "Bu birinci kartın 3. örneği")
     ),
     Flashcard(
         setId = 1,
+        cardId = 2,
         term = "World",
         definition = "Dünya",
         isStudied = false,
         isHard = false,
-        isHardStudied = false
+        isHardStudied = false,
+        examples = listOf("Bu ikinci kartın 1. örneği", "Bu ikinci kartın 2. örneği")
     ),
     Flashcard(
         setId = 1,
+        cardId = 3,
         term = "Computer",
         definition = "Bilgisayar",
         isStudied = false,
@@ -31,6 +36,7 @@ val set1FlashcardsList = listOf(
     ),
     Flashcard(
         setId = 1,
+        cardId = 4,
         term = "Programming",
         definition = "Programlama",
         isStudied = false,
@@ -39,14 +45,17 @@ val set1FlashcardsList = listOf(
     ),
     Flashcard(
         setId = 1,
+        cardId = 5,
         term = "Language",
         definition = "Dil",
         isStudied = true,
         isHard = false,
-        isHardStudied = false
+        isHardStudied = false,
+        examples = listOf("Bu beşinci kartın 1. örneği")
     ),
     Flashcard(
         setId = 1,
+        cardId = 6,
         term = "School",
         definition = "Okul",
         isStudied = true,
@@ -55,14 +64,17 @@ val set1FlashcardsList = listOf(
     ),
     Flashcard(
         setId = 1,
+        cardId = 7,
         term = "University",
         definition = "Üniversite",
         isStudied = false,
         isHard = false,
-        isHardStudied = false
+        isHardStudied = false,
+        examples = listOf("Bu yedinci kartın 1. örneği", "Bu yedinci kartın 2. örneği", "Bu birinci kartın 3. örneği")
     ),
     Flashcard(
         setId = 1,
+        cardId = 8,
         term = "Teacher",
         definition = "Öğretmen",
         isStudied = false,

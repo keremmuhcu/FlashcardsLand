@@ -81,5 +81,7 @@ dependencies {
     implementation(libs.bundles.room)
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
+    // lottie
+    implementation(libs.lottie.compose)
 
 }

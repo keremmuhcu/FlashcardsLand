@@ -43,7 +43,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.keremmuhcu.flashcardsland.R
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,7 +76,7 @@ fun AddOrUpdateFlashcardDialog(
                         .padding(16.dp),
                     onClick = { /* Yeni Kart Ekleme İşlemi */ }
                 ) {
-                    Text(text = "YENİ KART EKLE", fontFamily = gintoFontFamily, fontSize = 16.sp)
+                    Text(text = "YENİ KART EKLE", fontFamily = openSansFontFamily, fontSize = 16.sp)
                 }
             }
         ) { innerPadding ->
@@ -94,7 +94,7 @@ fun AddOrUpdateFlashcardDialog(
                     definitionTextField = definitionTextField,
                     onDefinitionTextFieldChange = { definitionTextField = it },
                     tfTextStyle = TextStyle(
-                        fontFamily = gintoFontFamily,
+                        fontFamily = openSansFontFamily,
                         fontSize = 18.sp
                     )
                 )
@@ -120,12 +120,12 @@ fun AddOrUpdateFlashcardDialog(
                                     label = {
                                         Text(
                                             text = "Örnek ${index + 1}",
-                                            fontFamily = gintoFontFamily,
+                                            fontFamily = openSansFontFamily,
                                             fontSize = 16.sp
                                         )
                                     },
                                     textStyle = TextStyle(
-                                        fontFamily = gintoFontFamily,
+                                        fontFamily = openSansFontFamily,
                                         fontSize = 18.sp
 
                                     )
@@ -193,7 +193,7 @@ private fun SwitchesComponent(
     ) {
         Text(
             text = "Zor",
-            fontFamily = gintoFontFamily,
+            fontFamily = openSansFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
@@ -211,7 +211,7 @@ private fun SwitchesComponent(
     ) {
         Text(
             text = "Örnekler",
-            fontFamily = gintoFontFamily,
+            fontFamily = openSansFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
@@ -238,7 +238,7 @@ private fun FlashcardTermAndDefinitionComponent(
         label = {
             Text(
                 text = "Terim",
-                fontFamily = gintoFontFamily,
+                fontFamily = openSansFontFamily,
                 fontSize = 16.sp
             )
         },
@@ -252,7 +252,7 @@ private fun FlashcardTermAndDefinitionComponent(
         label = {
             Text(
                 text = "Tanım",
-                fontFamily = gintoFontFamily,
+                fontFamily = openSansFontFamily,
                 fontSize = 16.sp
             )
         },
@@ -275,7 +275,7 @@ private fun AddOrUpdateFlashcardDialogTopBar(
         },
         actions = {
             TextButton(onClick = { onSaveClicked() }) {
-                Text(text = "Kaydet", fontFamily = gintoFontFamily, fontSize = 16.sp)
+                Text(text = "Kaydet", fontFamily = openSansFontFamily, fontSize = 16.sp)
             }
         }
     )

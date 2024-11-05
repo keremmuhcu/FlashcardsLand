@@ -67,28 +67,3 @@ class FlashcardsViewModel(
         }
     }
 }
-
-/*private fun loadFlashcards() {
-       viewModelScope.launch {
-           flashcardRepository.getFlashcardsBySetId(_state.value.selectedSetId)
-               .collect { flashcards->
-                   _state.update {
-                       it.copy(
-                           flashcards = flashcards,
-                           isLoading = false
-                       )
-                   }
-               }
-       }
-   }
-
-   fun loadData(setId: Int, setTitle: String) {
-       _state.update {
-           it.copy(
-               selectedSetId = setId,
-               selectedSetTitle = setTitle
-           )
-       }
-
-       loadFlashcards()
-   }*/

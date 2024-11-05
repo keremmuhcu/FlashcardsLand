@@ -13,6 +13,7 @@ import com.keremmuhcu.flashcardsland.presentation.flashcards.FlashcardsScreen
 import com.keremmuhcu.flashcardsland.presentation.flashcards.FlashcardsViewModel
 import com.keremmuhcu.flashcardsland.presentation.set_list.SetListScreen
 import com.keremmuhcu.flashcardsland.presentation.set_list.SetListViewModel
+import com.keremmuhcu.flashcardsland.presentation.study.basic.BasicStudyScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -28,6 +29,9 @@ fun MainNavigationGraph(navController: NavHostController) {
                 },
                 navigateToFlashcardsScreen = { setId, setTitle ->
                     navController.navigate(Route.FlashcardsScreenRoute(setId, setTitle))
+                },
+                navigateToBasicStudyScreen = { setId ->
+                    navController.navigate(Route.BasicStudyScreenRoute(setId))
                 }
             )
 
@@ -53,6 +57,14 @@ fun MainNavigationGraph(navController: NavHostController) {
                     cardId?.let {
                         navController.navigate(Route.AddOrEditFlashcardScreenRoute(setId, cardId))
                     } ?: navController.navigate(Route.AddOrEditFlashcardScreenRoute(setId))
+                }
+            )
+        }
+
+        composable<Route.BasicStudyScreenRoute> {
+            BasicStudyScreen(
+                onNavigateBack = {
+                    navController.navigateUp()
                 }
             )
         }

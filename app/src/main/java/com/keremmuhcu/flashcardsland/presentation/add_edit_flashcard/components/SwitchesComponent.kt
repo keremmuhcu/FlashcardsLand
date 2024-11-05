@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 
 @Composable
 fun SwitchesComponent(
@@ -30,7 +30,7 @@ fun SwitchesComponent(
     ) {
         Text(
             text = "Zor",
-            fontFamily = gintoFontFamily,
+            fontFamily = openSansFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
@@ -48,7 +48,7 @@ fun SwitchesComponent(
     ) {
         Text(
             text = "Örnekler",
-            fontFamily = gintoFontFamily,
+            fontFamily = openSansFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )

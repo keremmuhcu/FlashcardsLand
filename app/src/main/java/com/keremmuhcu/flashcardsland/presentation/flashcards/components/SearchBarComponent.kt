@@ -31,7 +31,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 
 @Composable
 fun SearchBarComponent(
@@ -53,7 +53,7 @@ fun SearchBarComponent(
         textStyle = TextStyle(
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 16.sp,
-            fontFamily = gintoFontFamily
+            fontFamily = openSansFontFamily
         ),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -83,7 +83,7 @@ fun SearchBarComponent(
                             text = "Terim ya da tanım ara...",
                             style = TextStyle(
                                 fontSize = 16.sp,
-                                fontFamily = gintoFontFamily,
+                                fontFamily = openSansFontFamily,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
 

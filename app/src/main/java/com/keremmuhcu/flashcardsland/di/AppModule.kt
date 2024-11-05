@@ -9,6 +9,7 @@ import com.keremmuhcu.flashcardsland.domain.repository.FlashcardSetRepository
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.AddOrEditFlashcardViewModel
 import com.keremmuhcu.flashcardsland.presentation.flashcards.FlashcardsViewModel
 import com.keremmuhcu.flashcardsland.presentation.set_list.SetListViewModel
+import com.keremmuhcu.flashcardsland.presentation.study.basic.BasicStudyViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -34,6 +35,7 @@ val viewModelModule = module {
     viewModel { SetListViewModel(get()) }
     viewModel { AddOrEditFlashcardViewModel(get(), get()) }
     viewModel { FlashcardsViewModel(get(),get()) }
+    viewModel { BasicStudyViewModel(get(),get()) }
 }
 
 

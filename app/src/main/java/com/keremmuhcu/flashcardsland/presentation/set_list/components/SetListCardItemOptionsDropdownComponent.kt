@@ -11,7 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.keremmuhcu.flashcardsland.ui.theme.gintoFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 
 @Composable
 fun SetListCardItemOptionsDropdownComponent(
@@ -26,7 +26,7 @@ fun SetListCardItemOptionsDropdownComponent(
     ) {
         DropdownMenuItem(
             text = {
-                Text(text = "Düzenle", fontFamily = gintoFontFamily)
+                Text(text = "Düzenle", fontFamily = openSansFontFamily)
             },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "")
@@ -37,7 +37,7 @@ fun SetListCardItemOptionsDropdownComponent(
         HorizontalDivider()
         DropdownMenuItem(
             text = {
-                Text(text = "Sil", fontFamily = gintoFontFamily, color = deleteColors)
+                Text(text = "Sil", fontFamily = openSansFontFamily, color = deleteColors)
             },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Delete, contentDescription = "", tint = deleteColors)
