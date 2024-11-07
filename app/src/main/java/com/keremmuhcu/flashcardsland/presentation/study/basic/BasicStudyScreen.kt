@@ -295,6 +295,7 @@ private fun BasicStudyScreenContent(
                             )
                         }
                     }
+                    isExamplesExpanded = false
                     onEvent(BasicStudyEvent.OnWrongButtonClicked)
 
                 },
@@ -310,6 +311,7 @@ private fun BasicStudyScreenContent(
                             )
                         }
                     }
+                    isExamplesExpanded = false
                     onEvent(BasicStudyEvent.OnCorrectButtonClicked)
                 }
             )

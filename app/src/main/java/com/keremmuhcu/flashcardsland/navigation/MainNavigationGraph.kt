@@ -1,23 +1,27 @@
 package com.keremmuhcu.flashcardsland.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.AddOrEditFlashcardScreen
-import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.AddOrEditFlashcardViewModel
 import com.keremmuhcu.flashcardsland.presentation.flashcards.FlashcardsScreen
-import com.keremmuhcu.flashcardsland.presentation.flashcards.FlashcardsViewModel
 import com.keremmuhcu.flashcardsland.presentation.set_list.SetListScreen
-import com.keremmuhcu.flashcardsland.presentation.set_list.SetListViewModel
 import com.keremmuhcu.flashcardsland.presentation.study.basic.BasicStudyScreen
-import org.koin.androidx.compose.koinViewModel
+import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
+
 
 @Composable
-fun MainNavigationGraph(navController: NavHostController) {
+fun MainNavigationGraph(
+    navController: NavHostController,
+    darkModeChange: () -> Unit,
+) {
     NavHost(
         navController = navController,
         startDestination = Route.SetListScreenRoute
@@ -32,7 +36,8 @@ fun MainNavigationGraph(navController: NavHostController) {
                 },
                 navigateToBasicStudyScreen = { setId ->
                     navController.navigate(Route.BasicStudyScreenRoute(setId))
-                }
+                },
+                toggleDarkMode = darkModeChange
             )
 
         }

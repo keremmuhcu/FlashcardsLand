@@ -1,6 +1,7 @@
 package com.keremmuhcu.flashcardsland.domain.repository
 
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
+import com.keremmuhcu.flashcardsland.domain.model.Settings
 import kotlinx.coroutines.flow.Flow
 
 interface FlashcardRepository {
@@ -11,4 +12,7 @@ interface FlashcardRepository {
     suspend fun getFlashcardById(id: Int): Flashcard
     suspend fun getRandom10UnstudiedFlashcards(setId: Int): List<Flashcard>
     suspend fun getUnstudiedFlashcardsCount(setId: Int): Int
+    fun getFlashcardListFilters(): Flow<Settings>
+    suspend fun updateSettings(settings: Settings)
+    suspend fun deleteFlashcardById(cardId: Int)
 }

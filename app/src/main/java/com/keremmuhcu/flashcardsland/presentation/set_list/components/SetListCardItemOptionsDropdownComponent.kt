@@ -20,7 +20,6 @@ fun SetListCardItemOptionsDropdownComponent(
     onEditItemClicked:() -> Unit,
     onDeleteItemClicked:() -> Unit
 ) {
-    val deleteColors = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.error
     DropdownMenu(
         expanded = isExpanded, onDismissRequest = { onDismissAction() },
     ) {
@@ -37,10 +36,10 @@ fun SetListCardItemOptionsDropdownComponent(
         HorizontalDivider()
         DropdownMenuItem(
             text = {
-                Text(text = "Sil", fontFamily = openSansFontFamily, color = deleteColors)
+                Text(text = "Sil", fontFamily = openSansFontFamily, color = MaterialTheme.colorScheme.error)
             },
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "", tint = deleteColors)
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "", tint = MaterialTheme.colorScheme.error)
             },
             onClick = { onDeleteItemClicked() }
         )

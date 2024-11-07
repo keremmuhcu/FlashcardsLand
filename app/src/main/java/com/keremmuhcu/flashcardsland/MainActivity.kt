@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.keremmuhcu.flashcardsland.navigation.MainNavigationGraph
+import com.keremmuhcu.flashcardsland.presentation.main.MainScreen
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
 import com.keremmuhcu.flashcardsland.util.Deneme
 
@@ -14,11 +15,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FlashcardsLandTheme {
-                val navController = rememberNavController()
-                MainNavigationGraph(navController = navController)
-                //Deneme()
-            }
+            MainScreen()
+            /*FlashcardsLandTheme {
+                Deneme()
+            }*/
         }
     }
 }

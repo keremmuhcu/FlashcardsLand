@@ -2,13 +2,16 @@ package com.keremmuhcu.flashcardsland.data.repository
 
 import com.keremmuhcu.flashcardsland.data.local.FlashcardDao
 import com.keremmuhcu.flashcardsland.data.local.FlashcardSetDao
+import com.keremmuhcu.flashcardsland.data.local.SettingsDao
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
+import com.keremmuhcu.flashcardsland.domain.model.Settings
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardRepository
 import kotlinx.coroutines.flow.Flow
 
 class FlashcardRepositoryImpl(
     private val flashcardDao: FlashcardDao,
-    private val flashcardSetDao: FlashcardSetDao
+    private val flashcardSetDao: FlashcardSetDao,
+    private val settingsDao: SettingsDao
 ): FlashcardRepository {
     override fun getFlashcardsBySetId(setId: Int): Flow<List<Flashcard>> {
         return flashcardDao.getFlashcardsBySetId(setId)
@@ -37,5 +40,17 @@ class FlashcardRepositoryImpl(
 
     override suspend fun getUnstudiedFlashcardsCount(setId: Int): Int {
         return flashcardDao.getUnstudiedFlashcardsCount(setId)
+    }
+
+    override fun getFlashcardListFilters(): Flow<Settings> {
+        return settingsDao.getSettings()
+    }
+
+    override suspend fun updateSettings(settings: Settings) {
+        settingsDao.updateSettings(settings)
+    }
+
+    override suspend fun deleteFlashcardById(cardId: Int) {
+        flashcardDao.deleteFlashcardById(cardId)
     }
 }

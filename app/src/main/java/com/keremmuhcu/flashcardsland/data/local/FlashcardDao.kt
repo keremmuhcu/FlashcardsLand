@@ -30,4 +30,7 @@ interface FlashcardDao {
 
     @Query("SELECT COUNT(*) FROM flashcard WHERE setId = :setId AND isStudied = 0")
     suspend fun getUnstudiedFlashcardsCount(setId: Int): Int
+
+    @Query("DELETE FROM flashcard WHERE cardId = :cardId")
+    suspend fun deleteFlashcardById(cardId: Int)
 }

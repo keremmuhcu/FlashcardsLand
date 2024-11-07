@@ -8,9 +8,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,6 +25,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -40,6 +45,7 @@ import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListCar
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListItemComponent
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
 import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
+import com.keremmuhcu.flashcardsland.ui.theme.primaryLight
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -47,14 +53,15 @@ fun SetListScreen(
     setListViewModel: SetListViewModel = koinViewModel<SetListViewModel>(),
     navigateToAddOrEditFlashcardScreen: (Int) -> Unit,
     navigateToFlashcardsScreen: (Int, String) -> Unit,
-    navigateToBasicStudyScreen: (Int) -> Unit
+    navigateToBasicStudyScreen: (Int) -> Unit,
+    toggleDarkMode: () -> Unit
 ) {
     val state by setListViewModel.state.collectAsStateWithLifecycle()
 
     var isAddSetDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
-        topBar = { SetListTopBarComponent() },
+        topBar = { SetListTopBarComponent { toggleDarkMode() } },
         floatingActionButton = {
             if(state.flashcardSets.isNotEmpty()) {
                 FloatingActionButton(
@@ -211,17 +218,30 @@ fun SetListScreenContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SetListTopBarComponent() {
-    TopAppBar(
+private fun SetListTopBarComponent(
+    darkModeToggleButtonClicked:() -> Unit
+) {
+    CenterAlignedTopAppBar(
         title = {
             Text(
-                modifier = Modifier.fillMaxWidth(),
                 text = "Setlerim",
                 fontFamily = openSansFontFamily,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
+        },
+        navigationIcon = {
+            IconButton(onClick = { darkModeToggleButtonClicked() }) {
+                Icon(
+                    imageVector = if (MaterialTheme.colorScheme.primary == primaryLight) {
+                        ImageVector.vectorResource(id = R.drawable.dark_mode)
+                    } else {
+                        ImageVector.vectorResource(id = R.drawable.light_mode)
+                    },
+                    contentDescription = ""
+                )
+            }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant

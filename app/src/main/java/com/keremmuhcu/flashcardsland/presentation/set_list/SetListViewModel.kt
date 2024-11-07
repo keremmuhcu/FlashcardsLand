@@ -2,13 +2,11 @@ package com.keremmuhcu.flashcardsland.presentation.set_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.keremmuhcu.flashcardsland.domain.model.FlashcardSet
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardSetRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

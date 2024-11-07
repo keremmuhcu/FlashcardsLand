@@ -2,6 +2,7 @@ package com.keremmuhcu.flashcardsland.domain.repository
 
 import com.keremmuhcu.flashcardsland.domain.model.FlashcardSet
 import com.keremmuhcu.flashcardsland.domain.model.FlashcardSetWithCards
+import com.keremmuhcu.flashcardsland.domain.model.Settings
 import kotlinx.coroutines.flow.Flow
 
 interface FlashcardSetRepository {
@@ -9,4 +10,7 @@ interface FlashcardSetRepository {
     suspend fun upsertFlashcardSet(flashcardSet: FlashcardSet)
     suspend fun deleteFlashcardSet(flashcardSet: FlashcardSet)
     suspend fun editUpdatedAt(setId: Int, updatedAt: Long)
+    suspend fun getDarkMode(): Boolean
+    suspend fun updateDarkMode(isDarkMode: Boolean)
+    fun getFlashcardListFilters(): Flow<Settings>
 }
