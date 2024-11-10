@@ -4,13 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import androidx.room.util.copy
-import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.domain.model.ListSortType
 import com.keremmuhcu.flashcardsland.domain.model.StudyFlashcardsOrderType
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardRepository
 import com.keremmuhcu.flashcardsland.navigation.Route
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first

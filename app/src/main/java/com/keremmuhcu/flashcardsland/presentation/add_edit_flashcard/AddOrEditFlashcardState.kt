@@ -1,6 +1,5 @@
 package com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard
 
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 

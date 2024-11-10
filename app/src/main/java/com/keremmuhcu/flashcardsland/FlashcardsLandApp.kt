@@ -1,6 +1,7 @@
 package com.keremmuhcu.flashcardsland
 
 import android.app.Application
+import com.keremmuhcu.flashcardsland.data.alarm.AndroidAlarmManager
 import com.keremmuhcu.flashcardsland.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -13,6 +14,9 @@ class FlashcardsLandApp: Application()  {
             androidContext(this@FlashcardsLandApp)
             androidLogger()
             modules(appModule)
+            //scheduleDailyCleanup(this@FlashcardsLandApp)
         }
+        val alarm = AndroidAlarmManager(this)
+        alarm.scheduleAlarm()
     }
 }

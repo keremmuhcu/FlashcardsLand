@@ -1,7 +1,6 @@
 package com.keremmuhcu.flashcardsland.presentation.set_list.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import com.keremmuhcu.flashcardsland.R
 import com.keremmuhcu.flashcardsland.presentation.components.SwitchRowWithText
 import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
-import com.keremmuhcu.flashcardsland.ui.theme.primaryLight
 
 @Composable
 fun ChooseStudyTypeDialog(

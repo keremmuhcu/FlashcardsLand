@@ -66,6 +66,6 @@ interface FlashcardDao {
     @Query("UPDATE flashcard SET isHardStudied = 0 WHERE setId = :setId")
     suspend fun resetHardProgress(setId: Int)
 
-    @Query("UPDATE flashcard SET isHardStudied = 0 AND isStudied = 0")
+    @Query("UPDATE flashcard SET isHardStudied = 0, isStudied = 0")
     suspend fun resetAllProgress()
 }

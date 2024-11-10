@@ -8,11 +8,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardRepository
-import com.keremmuhcu.flashcardsland.domain.repository.FlashcardSetRepository
 import com.keremmuhcu.flashcardsland.navigation.Route
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

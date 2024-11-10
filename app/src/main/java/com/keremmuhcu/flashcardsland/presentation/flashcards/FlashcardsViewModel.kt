@@ -6,10 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.domain.model.ListSortType
-import com.keremmuhcu.flashcardsland.domain.model.Settings
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardRepository
 import com.keremmuhcu.flashcardsland.navigation.Route
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine

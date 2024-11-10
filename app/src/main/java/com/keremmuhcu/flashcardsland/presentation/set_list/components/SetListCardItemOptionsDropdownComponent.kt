@@ -1,6 +1,5 @@
 package com.keremmuhcu.flashcardsland.presentation.set_list.components
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit

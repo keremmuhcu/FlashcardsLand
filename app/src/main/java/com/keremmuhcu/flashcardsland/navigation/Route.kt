@@ -1,6 +1,5 @@
 package com.keremmuhcu.flashcardsland.navigation
 
-import com.keremmuhcu.flashcardsland.domain.model.FlashcardSet
 import kotlinx.serialization.Serializable
 
 sealed interface Route {

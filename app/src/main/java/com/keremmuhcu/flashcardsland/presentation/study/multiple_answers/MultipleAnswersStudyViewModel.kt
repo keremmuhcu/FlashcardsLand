@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.domain.model.ListSortType
 import com.keremmuhcu.flashcardsland.domain.model.StudyFlashcardsOrderType
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardRepository

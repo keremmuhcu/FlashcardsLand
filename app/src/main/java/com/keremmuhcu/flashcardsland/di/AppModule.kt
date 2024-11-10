@@ -11,8 +11,8 @@ import com.keremmuhcu.flashcardsland.domain.repository.FlashcardRepository
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardSetRepository
 import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.AddOrEditFlashcardViewModel
 import com.keremmuhcu.flashcardsland.presentation.flashcards.FlashcardsViewModel
-import com.keremmuhcu.flashcardsland.presentation.set_list.SetListViewModel
 import com.keremmuhcu.flashcardsland.presentation.main.MainViewModel
+import com.keremmuhcu.flashcardsland.presentation.set_list.SetListViewModel
 import com.keremmuhcu.flashcardsland.presentation.study.basic.BasicStudyViewModel
 import com.keremmuhcu.flashcardsland.presentation.study.multiple_answers.MultipleAnswersStudyViewModel
 import kotlinx.coroutines.GlobalScope
@@ -47,7 +47,7 @@ val databaseModule = module {
 
 val repositoryModule = module {
     single<FlashcardRepository> { FlashcardRepositoryImpl(get(), get(), get()) }
-    single<FlashcardSetRepository> { FlashcardSetRepositoryImpl(get(), get(), get ()) }
+    single<FlashcardSetRepository> { FlashcardSetRepositoryImpl(get(), get(), get()) }
 }
 val viewModelModule = module {
     viewModel { SetListViewModel(get()) }
