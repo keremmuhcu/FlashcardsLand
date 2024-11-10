@@ -18,4 +18,7 @@ sealed interface Route {
 
     @Serializable
     data class BasicStudyScreenRoute(val setId: Int)
+
+    @Serializable
+    data class MultipleAnswersScreenRoute(val setId: Int)
 }

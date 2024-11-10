@@ -21,6 +21,9 @@ interface SettingsDao {
     @Query("UPDATE settings SET isDarkMode = :isDarkMode WHERE id = 1")
     suspend fun updateDarkMode(isDarkMode: Boolean)
 
+    @Query("UPDATE settings SET workHard = :isWorkHard WHERE id = 1")
+    suspend fun updateWorkHard(isWorkHard: Boolean)
+
     @Update
     suspend fun updateSettings(settings: Settings)
 

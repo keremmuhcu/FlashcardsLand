@@ -2,13 +2,11 @@ package com.keremmuhcu.flashcardsland.presentation.set_list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -17,7 +15,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,9 +37,11 @@ import com.keremmuhcu.flashcardsland.presentation.components.CustomAlertDialog
 import com.keremmuhcu.flashcardsland.presentation.components.EmptyListScreenComponent
 import com.keremmuhcu.flashcardsland.presentation.components.LoadingComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.AddOrEditSetDialog
+import com.keremmuhcu.flashcardsland.presentation.set_list.components.ChooseStudyTypeDialog
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListCardItemButtonsComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListCardItemContentComponent
 import com.keremmuhcu.flashcardsland.presentation.set_list.components.SetListItemComponent
+import com.keremmuhcu.flashcardsland.presentation.set_list.components.StudyFiltersDialog
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
 import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 import com.keremmuhcu.flashcardsland.ui.theme.primaryLight
@@ -54,6 +53,7 @@ fun SetListScreen(
     navigateToAddOrEditFlashcardScreen: (Int) -> Unit,
     navigateToFlashcardsScreen: (Int, String) -> Unit,
     navigateToBasicStudyScreen: (Int) -> Unit,
+    navigateToMultipleAnswersStudyScreen: (Int) -> Unit,
     toggleDarkMode: () -> Unit
 ) {
     val state by setListViewModel.state.collectAsStateWithLifecycle()
@@ -63,7 +63,7 @@ fun SetListScreen(
     Scaffold(
         topBar = { SetListTopBarComponent { toggleDarkMode() } },
         floatingActionButton = {
-            if(state.flashcardSets.isNotEmpty()) {
+            if (state.flashcardSets.isNotEmpty()) {
                 FloatingActionButton(
                     onClick = {
                         isAddSetDialogOpen = true
@@ -77,7 +77,7 @@ fun SetListScreen(
             }
         }
     ) { innerPadding ->
-        if(state.isLoading) {
+        if (state.isLoading) {
             LoadingComponent()
         } else {
             val modifier = Modifier
@@ -102,7 +102,8 @@ fun SetListScreen(
                     onEvent = setListViewModel::onEvent,
                     navigateToFlashcardsScreen = navigateToFlashcardsScreen,
                     navigateToAddOrEditFlashcardScreen = navigateToAddOrEditFlashcardScreen,
-                    navigateToBasicStudyScreen = navigateToBasicStudyScreen
+                    navigateToBasicStudyScreen = navigateToBasicStudyScreen,
+                    navigateToMultipleAnswersStudyScreen = navigateToMultipleAnswersStudyScreen
                 )
             }
             AddOrEditSetDialog(
@@ -133,16 +134,21 @@ fun SetListScreenContent(
     onEvent: (SetListEvent) -> Unit,
     navigateToFlashcardsScreen: (Int, String) -> Unit,
     navigateToAddOrEditFlashcardScreen: (Int) -> Unit,
-    navigateToBasicStudyScreen: (Int) -> Unit
+    navigateToBasicStudyScreen: (Int) -> Unit,
+    navigateToMultipleAnswersStudyScreen: (Int) -> Unit
 ) {
     var isUpdateSetDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var isStudyDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var isStudyFiltersDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var isResetProgressDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var clickedStudyType by rememberSaveable { mutableStateOf("BASIC") }
 
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(state.flashcardSets) { set->
+        items(state.flashcardSets) { set ->
             var isDropdownMenuOpen by rememberSaveable { mutableStateOf(false) }
             SetListItemComponent(
                 setItemClicked = {
@@ -155,9 +161,14 @@ fun SetListScreenContent(
                         onDropdownClicked = { isDropdownMenuOpen = !isDropdownMenuOpen },
                         onEditClicked = {
                             onEvent(SetListEvent.ChangeSelectedSet(set))
-                            onEvent(SetListEvent.OnSetTitleTextFieldChange(
-                                TextFieldValue(set.flashcardSet.title, TextRange(set.flashcardSet.title.length))
-                            ))
+                            onEvent(
+                                SetListEvent.OnSetTitleTextFieldChange(
+                                    TextFieldValue(
+                                        set.flashcardSet.title,
+                                        TextRange(set.flashcardSet.title.length)
+                                    )
+                                )
+                            )
                             isUpdateSetDialogOpen = true
                             isDropdownMenuOpen = !isDropdownMenuOpen
 
@@ -174,7 +185,8 @@ fun SetListScreenContent(
                             navigateToAddOrEditFlashcardScreen(set.flashcardSet.setId!!)
                         },
                         studyButtonClicked = {
-                            navigateToBasicStudyScreen(set.flashcardSet.setId!!)
+                            onEvent(SetListEvent.ChangeSelectedSet(set))
+                            isStudyDialogOpen = true
                         }
                     )
                 }
@@ -214,12 +226,75 @@ fun SetListScreenContent(
             isDeleteDialogOpen = false
         }
     )
+
+    ChooseStudyTypeDialog(
+        isOpen = isStudyDialogOpen,
+        workHard = state.workOnlyHard,
+        workHardSwitchClicked = { onEvent(SetListEvent.OnWorkOnlyHardSwitchClicked) },
+        onBasicStudyClicked = {
+            if (state.selectedSet!!.cards.count { if (state.workOnlyHard) (!it.isHardStudied && it.isHard) else !it.isStudied } == 0) {
+                clickedStudyType = "BASIC"
+                isResetProgressDialogOpen = true
+            } else {
+                isStudyDialogOpen = false
+                navigateToBasicStudyScreen(state.selectedSet.flashcardSet.setId!!)
+            }
+        },
+        onMultipleStudyClicked = {
+            if (state.selectedSet!!.cards.count { if (state.workOnlyHard) (!it.isHardStudied && it.isHard) else !it.isStudied } == 0) {
+                clickedStudyType = "MULTIPLE"
+                isResetProgressDialogOpen = true
+            } else {
+                isStudyDialogOpen = false
+                navigateToMultipleAnswersStudyScreen(state.selectedSet.flashcardSet.setId!!)
+            }
+
+        },
+        onSettingsIconClicked = { isStudyFiltersDialogOpen = true },
+        onCancel = { isStudyDialogOpen = false }
+    )
+    CustomAlertDialog(
+        title = if (!state.workOnlyHard) "Tüm kartlar çalışıldı" else "Tüm zor kartlar çalışıldı",
+        text = "Günlük çalışma sıfırlanacak. Bu işlem geri alınamaz.",
+        isOpen = isResetProgressDialogOpen,
+        onConfirm = {
+            onEvent(SetListEvent.OnResetProgressButtonClicked(state.selectedSet!!.flashcardSet.setId!!))
+            if (!state.resetProgress) {
+                isResetProgressDialogOpen = false
+                isStudyDialogOpen = false
+                if (clickedStudyType == "BASIC")
+                    navigateToBasicStudyScreen(state.selectedSet.flashcardSet.setId!!)
+                else
+                    navigateToMultipleAnswersStudyScreen(state.selectedSet.flashcardSet.setId!!)
+            }
+        },
+        onCancel = {
+            isResetProgressDialogOpen = false
+        }
+    )
+    StudyFiltersDialog(
+        isOpen = isStudyFiltersDialogOpen,
+        studySortType = state.studySortType,
+        studySortTypeChanged = { onEvent(SetListEvent.OnStudySortTypeChanged(it)) },
+        cardCountOneRound = state.cardCountOneRound,
+        cardCountOneRoundChanged = { onEvent(SetListEvent.OnCardCountOneRoundChanged(it)) },
+        workDefinitions = state.workDefinitions,
+        workDefinitionsSwitchClicked = { onEvent(SetListEvent.OnWorkDefinitionsSwitchesClicked) },
+        confirmButtonClicked = {
+            isStudyFiltersDialogOpen = false
+            onEvent(SetListEvent.OnFiltersConfirmButtonClicked)
+        },
+        onDismissRequest = {
+            onEvent(SetListEvent.OnFiltersCancelButtonClicked)
+            isStudyFiltersDialogOpen = false
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SetListTopBarComponent(
-    darkModeToggleButtonClicked:() -> Unit
+    darkModeToggleButtonClicked: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {

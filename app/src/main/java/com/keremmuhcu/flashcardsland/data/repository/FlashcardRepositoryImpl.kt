@@ -5,6 +5,7 @@ import com.keremmuhcu.flashcardsland.data.local.FlashcardSetDao
 import com.keremmuhcu.flashcardsland.data.local.SettingsDao
 import com.keremmuhcu.flashcardsland.domain.model.Flashcard
 import com.keremmuhcu.flashcardsland.domain.model.Settings
+import com.keremmuhcu.flashcardsland.domain.model.StudyFlashcardsOrderType
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -34,10 +35,6 @@ class FlashcardRepositoryImpl(
         return flashcardDao.getFlashcardById(id)
     }
 
-    override suspend fun getRandom10UnstudiedFlashcards(setId: Int): List<Flashcard> {
-        return flashcardDao.getRandom10UnstudiedFlashcards(setId = setId)
-    }
-
     override suspend fun getUnstudiedFlashcardsCount(setId: Int): Int {
         return flashcardDao.getUnstudiedFlashcardsCount(setId)
     }
@@ -53,4 +50,26 @@ class FlashcardRepositoryImpl(
     override suspend fun deleteFlashcardById(cardId: Int) {
         flashcardDao.deleteFlashcardById(cardId)
     }
+
+    override suspend fun getFalseAnswers(setId: Int, cardId: Int): List<Flashcard> {
+        return flashcardDao.getFalseAnswers(setId, cardId)
+    }
+
+    override suspend fun getUnstudiedFlashcardsForStudy(
+        setId: Int,
+        studyType: String,
+        isHard: Boolean,
+        sortOrder: StudyFlashcardsOrderType,
+        limit: Int
+    ): List<Flashcard> {
+        return flashcardDao.getUnstudiedFlashcardsForStudy(
+            setId = setId,
+            studyType = studyType,
+            isHard = isHard,
+            sortOrder = sortOrder.name,
+            limit = limit
+        )
+    }
+
+
 }

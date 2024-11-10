@@ -83,7 +83,5 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     // lottie
     implementation(libs.lottie.compose)
-    // datastore
-    implementation(libs.androidx.datastore)
 
 }

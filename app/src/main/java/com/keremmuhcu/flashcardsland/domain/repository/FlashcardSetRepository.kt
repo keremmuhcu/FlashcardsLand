@@ -13,4 +13,9 @@ interface FlashcardSetRepository {
     suspend fun getDarkMode(): Boolean
     suspend fun updateDarkMode(isDarkMode: Boolean)
     fun getFlashcardListFilters(): Flow<Settings>
+    suspend fun updateWorkHard(isWorkHard: Boolean)
+    suspend fun updateSettings(settings: Settings)
+    suspend fun resetHardProgress(setId: Int)
+    suspend fun resetNormalProgress(setId: Int)
+
 }

@@ -14,6 +14,7 @@ import com.keremmuhcu.flashcardsland.presentation.flashcards.FlashcardsViewModel
 import com.keremmuhcu.flashcardsland.presentation.set_list.SetListViewModel
 import com.keremmuhcu.flashcardsland.presentation.main.MainViewModel
 import com.keremmuhcu.flashcardsland.presentation.study.basic.BasicStudyViewModel
+import com.keremmuhcu.flashcardsland.presentation.study.multiple_answers.MultipleAnswersStudyViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidApplication
@@ -46,7 +47,7 @@ val databaseModule = module {
 
 val repositoryModule = module {
     single<FlashcardRepository> { FlashcardRepositoryImpl(get(), get(), get()) }
-    single<FlashcardSetRepository> { FlashcardSetRepositoryImpl(get(), get()) }
+    single<FlashcardSetRepository> { FlashcardSetRepositoryImpl(get(), get(), get ()) }
 }
 val viewModelModule = module {
     viewModel { SetListViewModel(get()) }
@@ -54,6 +55,7 @@ val viewModelModule = module {
     viewModel { FlashcardsViewModel(get(),get()) }
     viewModel { BasicStudyViewModel(get(),get()) }
     viewModel { MainViewModel(get()) }
+    viewModel { MultipleAnswersStudyViewModel(get(), get()) }
 }
 
 

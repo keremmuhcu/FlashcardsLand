@@ -31,7 +31,6 @@ class FlashcardsViewModel(
         flashcardRepository.getFlashcardsBySetId(setId),
         flashcardRepository.getFlashcardListFilters()
     ) { state, flashcards, settings ->
-        println("Flash viewmodel statecombine girdi..")
         val filteredList = when(settings.listSortType) {
             ListSortType.ALPHABETICAL_ASCENDING -> flashcards.sortedBy { if (settings.showOnlyTerm) it.term else it.definition }
             ListSortType.ALPHABETICAL_DESCENDING -> flashcards.sortedByDescending { if (settings.showOnlyTerm) it.term else it.definition }

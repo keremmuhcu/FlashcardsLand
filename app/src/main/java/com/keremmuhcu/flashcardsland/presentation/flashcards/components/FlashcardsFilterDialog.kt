@@ -11,10 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
@@ -22,7 +18,6 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,10 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.keremmuhcu.flashcardsland.domain.model.ListSortType
+import com.keremmuhcu.flashcardsland.presentation.components.CustomExposedDropdownMenu
+import com.keremmuhcu.flashcardsland.presentation.components.SwitchRowWithText
 import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 
 @Composable
@@ -56,7 +52,12 @@ fun FlashcardsFilterDialog(
 ) {
     if (isDialogOpen) {
         AlertDialog(
-            onDismissRequest = onDismissRequest,
+            onDismissRequest = {},
+            dismissButton = {
+                TextButton(onClick = onDismissRequest) {
+                    Text(text = "İptal", fontFamily = openSansFontFamily)
+                }
+            },
             confirmButton = {
                 TextButton(onClick = confirmButtonClicked) {
                     Text(text = "Onayla", fontFamily = openSansFontFamily)
@@ -104,7 +105,8 @@ private fun DialogContent(
     var isExposedMenuExpanded by rememberSaveable { mutableStateOf(false) }
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SortTypeDropdown(
+        CustomExposedDropdownMenu(
+            label = "Kartları sırala",
             listSortType = listSortType,
             filterTitles = filterTitles,
             isExposedMenuExpanded = isExposedMenuExpanded,
@@ -112,13 +114,13 @@ private fun DialogContent(
             onDropdownItemClick = dropdownItemClicked
         )
         ShowDateSwitch(showDate = showDate, listSortType = listSortType, showDateSwitchChecked = showDateSwitchChecked)
-        ShowOneSideSwitch(showOneSide = showOneSide, showOneSideSwitchChecked = showOneSideSwitchChecked)
+        SwitchRowWithText(text = "Tek taraf göster", switchState = showOneSide, switchStateChanged = showOneSideSwitchChecked)
         RadioButtonOptions(showOneSide = showOneSide, showOnlyTerm = showOnlyTerm, radioButtonClicked = radioButtonClicked)
         CardFlipOption(showOneSide = showOneSide, cardCanFlip = cardCanFlip, canCardFlipCheckBoxClicked = canCardFlipCheckBoxClicked)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/*@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SortTypeDropdown(
     listSortType: String,
@@ -152,7 +154,7 @@ private fun SortTypeDropdown(
             }
         }
     }
-}
+}*/
 
 @Composable
 private fun ShowDateSwitch(
@@ -177,7 +179,7 @@ private fun ShowDateSwitch(
         Switch(checked = showDate, onCheckedChange = { showDateSwitchChecked() }, enabled = listSortType in filterTitles)
     }
 }
-
+/*
 @Composable
 private fun ShowOneSideSwitch(
     showOneSide: Boolean,
@@ -193,7 +195,7 @@ private fun ShowOneSideSwitch(
         Switch(checked = showOneSide, onCheckedChange = { showOneSideSwitchChecked() })
     }
 }
-
+*/
 @Composable
 private fun RadioButtonOptions(
     showOneSide: Boolean,
@@ -201,10 +203,10 @@ private fun RadioButtonOptions(
     radioButtonClicked: (Boolean) -> Unit
 ) {
     val color = if (showOneSide) MaterialTheme.colorScheme.onSurface else RadioButtonDefaults.colors().disabledUnselectedColor
-    RowOption("Tanım", selected = showOnlyTerm, enabled = showOneSide, color = color) {
+    RowOption("Terim", selected = showOnlyTerm, enabled = showOneSide, color = color) {
         radioButtonClicked(true)
     }
-    RowOption("Terim", selected = !showOnlyTerm, enabled = showOneSide, color = color) {
+    RowOption("Tanım", selected = !showOnlyTerm, enabled = showOneSide, color = color) {
         radioButtonClicked(false)
     }
 }

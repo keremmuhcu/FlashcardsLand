@@ -1,5 +1,6 @@
 package com.keremmuhcu.flashcardsland.data.repository
 
+import com.keremmuhcu.flashcardsland.data.local.FlashcardDao
 import com.keremmuhcu.flashcardsland.data.local.FlashcardSetDao
 import com.keremmuhcu.flashcardsland.data.local.SettingsDao
 import com.keremmuhcu.flashcardsland.domain.model.FlashcardSet
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 class FlashcardSetRepositoryImpl(
     private val flashcardSetDao: FlashcardSetDao,
+    private val flashcardDao: FlashcardDao,
     private val settingsDao: SettingsDao
 ): FlashcardSetRepository {
     override fun getAllFlashcardSetsWithCards(): Flow<List<FlashcardSetWithCards>> {
@@ -38,5 +40,21 @@ class FlashcardSetRepositoryImpl(
 
     override fun getFlashcardListFilters(): Flow<Settings> {
         return settingsDao.getSettings()
+    }
+
+    override suspend fun updateWorkHard(isWorkHard: Boolean) {
+        settingsDao.updateWorkHard(isWorkHard)
+    }
+
+    override suspend fun updateSettings(settings: Settings) {
+        settingsDao.updateSettings(settings)
+    }
+
+    override suspend fun resetHardProgress(setId: Int) {
+        flashcardDao.resetHardProgress(setId)
+    }
+
+    override suspend fun resetNormalProgress(setId: Int) {
+        flashcardDao.resetNormalProgress(setId)
     }
 }

@@ -17,19 +17,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,16 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.keremmuhcu.flashcardsland.R
-import com.keremmuhcu.flashcardsland.presentation.components.CustomAlertDialog
 import com.keremmuhcu.flashcardsland.presentation.components.LoadingComponent
 import com.keremmuhcu.flashcardsland.presentation.study.basic.components.BasicStudyButtonSection
 import com.keremmuhcu.flashcardsland.presentation.study.basic.components.ExpandableExamplesTitleText
 import com.keremmuhcu.flashcardsland.presentation.study.basic.components.FlippableCard
-import com.keremmuhcu.flashcardsland.presentation.study.basic.components.ResultTextRow
+import com.keremmuhcu.flashcardsland.presentation.study.components.StudyResults
+import com.keremmuhcu.flashcardsland.presentation.study.components.StudyTopBar
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
 import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 import kotlinx.coroutines.launch
@@ -76,11 +59,14 @@ fun BasicStudyScreen(
     } else {
         Scaffold(
             topBar = {
-                BasicStudyScreenTopBar(
+                StudyTopBar(
                     currentCardIndex = state.currentCardIndex,
                     flashcardCount = state.flashcards.size,
                     isFinish = state.isFinish,
-                    currentCardIsHard = if (!state.isFinish) state.flashcards[state.currentCardIndex].isHard else false,
+                    currentCardIsHard = state.currentCardIsHard,
+                    onFavoriteButtonClicked = {
+                        basicStudyViewModel.onEvent(BasicStudyEvent.OnFavoriteButtonClicked)
+                    },
                     onCloseIconClicked = {
                         onNavigateBack()
                     }
@@ -119,98 +105,6 @@ fun BasicStudyScreen(
 }
 
 @Composable
-private fun StudyResults(
-    wrongs: String,
-    corrects: String,
-    remainingCards: String,
-    startNextRound: () -> Unit,
-    repeatCurrentRound: () -> Unit,
-    finishedButtonClicked:() -> Unit
-) {
-    val composition1 by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.celebration_lottie))
-    val composition2 by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.successful_lottie))
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = Modifier.weight(0.2f),
-            contentAlignment = Alignment.Center
-        ) {
-            if (wrongs.toInt() == 0) LottieAnimation(composition = composition1)
-            LottieAnimation(composition = composition2)
-        }
-        Text(
-            text = "Çalışma tamamlandı!",
-            fontFamily = openSansFontFamily,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.SemiBold
-        )
-
-        HorizontalDivider()
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = 20.dp),
-        ) {
-            Column(
-                modifier = Modifier.padding(all = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ResultTextRow(
-                    text = if (wrongs.toInt() == 0) "Tebrikler! Hepsi Doğru: " else "Doğrular: ",
-                    result = corrects,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                if (wrongs.toInt() > 0) {
-                    ResultTextRow(
-                        text = "Yanlışlar: ",
-                        result = wrongs,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-                ResultTextRow(
-                    text = "Kalan kartlar: ",
-                    result = remainingCards,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            }
-        }
-        Spacer(
-            modifier = Modifier.weight(0.8f)
-        )
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                OutlinedButton(
-                    modifier = Modifier.weight(0.5f),
-                    onClick = { startNextRound() }
-                ) {
-                    Text(text = "SONRAKİ TUR", fontFamily = openSansFontFamily)
-                }
-                OutlinedButton(
-                    modifier = Modifier.weight(0.5f),
-                    onClick = { repeatCurrentRound() }
-                ) {
-                    Text(text = "TURU TEKRARLA", fontFamily = openSansFontFamily)
-                }
-            }
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { finishedButtonClicked() }
-            ) {
-                Text(text = "BİTİR", fontFamily = openSansFontFamily)
-            }
-        }
-    }
-}
-
-@Composable
 private fun BasicStudyScreenContent(
     state: BasicStudyState,
     onEvent: (BasicStudyEvent) -> Unit,
@@ -221,6 +115,7 @@ private fun BasicStudyScreenContent(
 
     LaunchedEffect(pagerState.currentPage) {
         onEvent(BasicStudyEvent.ChangeCurrentCardIndex(pagerState.currentPage))
+        println(state.currentCardIndex)
     }
 
     HorizontalPager(
@@ -251,8 +146,8 @@ private fun BasicStudyScreenContent(
         ) {
             FlippableCard(
                 modifier = Modifier.weight(0.5f),
-                englishWord = state.flashcards[state.currentCardIndex].term,
-                turkishWord = state.flashcards[state.currentCardIndex].definition
+                englishWord = state.termSide,
+                turkishWord = state.definitionSide
             )
             if (state.flashcards[state.currentCardIndex].examples[0].isNotBlank()) {
                 ExpandableExamplesTitleText(
@@ -320,66 +215,6 @@ private fun BasicStudyScreenContent(
     }
 
 
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun BasicStudyScreenTopBar(
-    currentCardIsHard: Boolean,
-    currentCardIndex: Int,
-    flashcardCount: Int,
-    isFinish: Boolean,
-    onCloseIconClicked: () -> Unit
-) {
-    var goBackAlertDialogControl by rememberSaveable { mutableStateOf(false) }
-
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = if (isFinish) {
-                    ""
-                } else {
-                    "${currentCardIndex + 1}/$flashcardCount"
-                },
-                fontFamily = openSansFontFamily
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = {
-                if (isFinish) {
-                    onCloseIconClicked()
-                } else {
-                    goBackAlertDialogControl = true
-                }
-            }) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = "")
-            }
-        },
-        actions = {
-            if (!isFinish) {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        imageVector = if (currentCardIsHard) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "",
-                        tint = if (currentCardIsHard) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-        }
-    )
-
-    CustomAlertDialog(
-        title = "Çalışma sonlandırılacak",
-        text = "Şimdiye kadarki olan ilerlemeniz kaydedilecek.",
-        isOpen = goBackAlertDialogControl,
-        onConfirm = {
-            goBackAlertDialogControl = false
-            onCloseIconClicked()
-        },
-        onCancel = {
-            goBackAlertDialogControl = false
-        }
-    )
 }
 
 @PreviewLightDark

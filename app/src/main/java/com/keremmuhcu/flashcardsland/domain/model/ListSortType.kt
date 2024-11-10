@@ -5,4 +5,5 @@ object ListSortType {
     const val ALPHABETICAL_DESCENDING = "Alfabetik (Z-A)"
     const val DATE_ASCENDING = "Tarih (Önce en eski)"
     const val DATE_DESCENDING = "Tarih (Önce en yeni)"
+    const val RANDOM = "Rastgele"
 }

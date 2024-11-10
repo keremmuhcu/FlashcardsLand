@@ -14,6 +14,7 @@ import com.keremmuhcu.flashcardsland.presentation.add_edit_flashcard.AddOrEditFl
 import com.keremmuhcu.flashcardsland.presentation.flashcards.FlashcardsScreen
 import com.keremmuhcu.flashcardsland.presentation.set_list.SetListScreen
 import com.keremmuhcu.flashcardsland.presentation.study.basic.BasicStudyScreen
+import com.keremmuhcu.flashcardsland.presentation.study.multiple_answers.MultipleAnswersStudyScreen
 import com.keremmuhcu.flashcardsland.ui.theme.FlashcardsLandTheme
 
 
@@ -36,6 +37,9 @@ fun MainNavigationGraph(
                 },
                 navigateToBasicStudyScreen = { setId ->
                     navController.navigate(Route.BasicStudyScreenRoute(setId))
+                },
+                navigateToMultipleAnswersStudyScreen = { setId ->
+                    navController.navigate(Route.MultipleAnswersScreenRoute(setId))
                 },
                 toggleDarkMode = darkModeChange
             )
@@ -68,6 +72,14 @@ fun MainNavigationGraph(
 
         composable<Route.BasicStudyScreenRoute> {
             BasicStudyScreen(
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
+        composable<Route.MultipleAnswersScreenRoute> {
+            MultipleAnswersStudyScreen(
                 onNavigateBack = {
                     navController.navigateUp()
                 }

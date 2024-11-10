@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keremmuhcu.flashcardsland.domain.model.FlashcardSet
 import com.keremmuhcu.flashcardsland.domain.repository.FlashcardSetRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,10 +20,10 @@ class SetListViewModel(
     val state = combine(
         _state,
         flashcardSetRepository.getAllFlashcardSetsWithCards()
-    ) { state, setsWithCards ->
+    ) { state, setsWithCards,  ->
         state.copy(
             flashcardSets = setsWithCards,
-            isLoading = false
+            isLoading = state.studySortType.isEmpty()
         )
     }.stateIn(
         scope = viewModelScope,
@@ -44,8 +46,76 @@ class SetListViewModel(
                     it.copy(selectedSet = event.selectedSet)
                 }
             }
+
+            is SetListEvent.OnCardCountOneRoundChanged -> {
+                _state.update { it.copy(cardCountOneRound = event.cardCountOneRound) }
+            }
+            is SetListEvent.OnStudySortTypeChanged -> {
+                _state.update { it.copy(studySortType = event.sortType) }
+            }
+            SetListEvent.OnWorkDefinitionsSwitchesClicked -> {
+                _state.update { it.copy(workDefinitions = !_state.value.workDefinitions) }
+            }
+            SetListEvent.OnWorkOnlyHardSwitchClicked -> {
+                viewModelScope.launch {
+                    flashcardSetRepository.updateWorkHard(!state.value.workOnlyHard)
+                    _state.update { it.copy(workOnlyHard = !_state.value.workOnlyHard) }
+                }
+            }
+
+            SetListEvent.OnFiltersCancelButtonClicked -> resetFields()
+            SetListEvent.OnFiltersConfirmButtonClicked -> {
+                viewModelScope.launch {
+                    val settings = state.value.settings.copy(
+                        tourCardCount = state.value.cardCountOneRound.toInt(),
+                        studySortType = state.value.studySortType,
+                        workDefinitions = state.value.workDefinitions,
+                        workHard = state.value.workOnlyHard
+                    )
+                    flashcardSetRepository.updateSettings(settings)
+                    _state.update { it.copy(settings = settings) }
+                }
+            }
+
+            is SetListEvent.OnResetProgressButtonClicked -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(resetProgress = true) }
+                    if (state.value.workOnlyHard)
+                        flashcardSetRepository.resetHardProgress(setId = event.setId)
+                    else
+                        flashcardSetRepository.resetNormalProgress(setId = event.setId)
+
+                    _state.update { it.copy(resetProgress = false) }
+
+                }
+            }
         }
     }
+
+    init {
+        getDefaultValues()
+    }
+
+    private fun getDefaultValues() {
+        viewModelScope.launch {
+            val settings = flashcardSetRepository.getFlashcardListFilters().first()
+            _state.update { it.copy(settings = settings) }
+
+            resetFields()
+        }
+    }
+
+    private fun resetFields() {
+        _state.update {
+            it.copy(
+                studySortType = _state.value.settings.studySortType,
+                cardCountOneRound = _state.value.settings.tourCardCount.toString(),
+                workDefinitions = _state.value.settings.workDefinitions,
+                workOnlyHard = _state.value.settings.workHard
+            )
+        }
+    }
+
 
     private fun updateSet() {
         viewModelScope.launch {

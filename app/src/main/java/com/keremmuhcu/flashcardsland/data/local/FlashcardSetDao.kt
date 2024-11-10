@@ -24,4 +24,5 @@ interface FlashcardSetDao {
 
     @Query("UPDATE flashcard_set SET updatedAt = :updatedAt WHERE setId = :setId")
     suspend fun editUpdatedAt(setId: Int, updatedAt: Long)
+
 }
