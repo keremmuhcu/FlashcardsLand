@@ -39,6 +39,10 @@ class FlashcardRepositoryImpl(
         return flashcardDao.getUnstudiedFlashcardsCount(setId)
     }
 
+    override suspend fun getUnstudiedHardFlashcardsCount(setId: Int): Int {
+        return flashcardDao.getUnstudiedHardFlashcardsCount(setId)
+    }
+
     override fun getFlashcardListFilters(): Flow<Settings> {
         return settingsDao.getSettings()
     }

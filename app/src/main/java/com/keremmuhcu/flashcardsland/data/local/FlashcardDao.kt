@@ -51,11 +51,14 @@ interface FlashcardDao {
         limit: Int
     ): List<Flashcard>
 
+    @Query("DELETE FROM flashcard WHERE cardId = :cardId")
+    suspend fun deleteFlashcardById(cardId: Int)
+
     @Query("SELECT COUNT(*) FROM flashcard WHERE setId = :setId AND isStudied = 0")
     suspend fun getUnstudiedFlashcardsCount(setId: Int): Int
 
-    @Query("DELETE FROM flashcard WHERE cardId = :cardId")
-    suspend fun deleteFlashcardById(cardId: Int)
+    @Query("SELECT COUNT(*) FROM flashcard WHERE setId = :setId AND isHardStudied = 0 AND isHard = 1")
+    suspend fun getUnstudiedHardFlashcardsCount(setId: Int): Int
 
     @Query("SELECT * FROM flashcard WHERE setId = :setId AND cardId NOT IN (:cardId) ORDER BY RANDOM() LIMIT 3")
     suspend fun getFalseAnswers(setId: Int, cardId: Int): List<Flashcard>

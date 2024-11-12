@@ -104,11 +104,13 @@ fun StudyResults(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                OutlinedButton(
-                    modifier = Modifier.weight(0.5f),
-                    onClick = { startNextRound() }
-                ) {
-                    Text(text = "SONRAKİ TUR", fontFamily = openSansFontFamily)
+                if (remainingCards.toInt() > 0) {
+                    OutlinedButton(
+                        modifier = Modifier.weight(0.5f),
+                        onClick = { startNextRound() }
+                    ) {
+                        Text(text = "SONRAKİ TUR", fontFamily = openSansFontFamily)
+                    }
                 }
                 OutlinedButton(
                     modifier = Modifier.weight(0.5f),

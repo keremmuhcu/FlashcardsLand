@@ -12,6 +12,7 @@ interface FlashcardRepository {
     fun getHardFlashcards(): Flow<List<Flashcard>>
     suspend fun getFlashcardById(id: Int): Flashcard
     suspend fun getUnstudiedFlashcardsCount(setId: Int): Int
+    suspend fun getUnstudiedHardFlashcardsCount(setId: Int): Int
     fun getFlashcardListFilters(): Flow<Settings>
     suspend fun updateSettings(settings: Settings)
     suspend fun deleteFlashcardById(cardId: Int)

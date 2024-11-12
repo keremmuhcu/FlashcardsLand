@@ -75,7 +75,15 @@ class BasicStudyViewModel(
                 )
             )
 
-            val remainingCards = if (isFinish) flashcardRepository.getUnstudiedFlashcardsCount(setId) else 0
+            val remainingCards = if (isFinish) {
+                if (state.value.settings.workHard)
+                    flashcardRepository.getUnstudiedHardFlashcardsCount(setId)
+                else
+                    flashcardRepository.getUnstudiedFlashcardsCount(setId)
+            } else {
+                0
+            }
+
             _state.value = state.value.copy(
                 corrects = if (isCorrect) state.value.corrects + 1 else state.value.corrects,
                 wrongs = if (!isCorrect) state.value.wrongs + 1 else state.value.wrongs,
