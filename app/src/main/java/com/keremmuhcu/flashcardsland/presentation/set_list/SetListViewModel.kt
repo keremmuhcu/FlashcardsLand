@@ -36,14 +36,10 @@ class SetListViewModel(
             SetListEvent.OnEditSetButtonClicked -> updateSet()
             SetListEvent.OnDeleteSetButtonClicked -> deleteSet()
             is SetListEvent.OnSetTitleTextFieldChange -> {
-                _state.update {
-                    it.copy(setTitleTextField = event.title)
-                }
+                _state.update { it.copy(setTitleTextField = event.title) }
             }
             is SetListEvent.ChangeSelectedSet -> {
-                _state.update {
-                    it.copy(selectedSet = event.selectedSet)
-                }
+                _state.update { it.copy(selectedSet = event.selectedSet) }
             }
 
             is SetListEvent.OnCardCountOneRoundChanged -> {
@@ -95,11 +91,10 @@ class SetListViewModel(
         getDefaultValues()
     }
 
-    private fun getDefaultValues() {
+    fun getDefaultValues() {
         viewModelScope.launch {
             val settings = flashcardSetRepository.getFlashcardListFilters().first()
             _state.update { it.copy(settings = settings) }
-
             resetFields()
         }
     }

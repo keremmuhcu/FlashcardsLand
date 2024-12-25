@@ -17,8 +17,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -80,6 +83,9 @@ fun SetListScreen(
         if (state.isLoading) {
             LoadingComponent()
         } else {
+            LaunchedEffect(Unit) {
+                setListViewModel.getDefaultValues()
+            }
             val modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -140,6 +146,7 @@ fun SetListScreenContent(
     var isUpdateSetDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isStudyDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var doesSetContainsHardCards by rememberSaveable { mutableStateOf(false) }
     var isStudyFiltersDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isResetProgressDialogOpen by rememberSaveable { mutableStateOf(false) }
     var clickedStudyType by rememberSaveable { mutableStateOf("BASIC") }
@@ -186,6 +193,7 @@ fun SetListScreenContent(
                         },
                         studyButtonClicked = {
                             onEvent(SetListEvent.ChangeSelectedSet(set))
+                            doesSetContainsHardCards = set.cards.any { it.isHard }
                             isStudyDialogOpen = true
                         }
                     )
@@ -229,10 +237,14 @@ fun SetListScreenContent(
 
     ChooseStudyTypeDialog(
         isOpen = isStudyDialogOpen,
+        doesSetContainsHardCards = doesSetContainsHardCards,
         workHard = state.workOnlyHard,
         workHardSwitchClicked = { onEvent(SetListEvent.OnWorkOnlyHardSwitchClicked) },
         onBasicStudyClicked = {
-            if (state.selectedSet!!.cards.count { if (state.workOnlyHard) (!it.isHardStudied && it.isHard) else !it.isStudied } == 0) {
+            if(!doesSetContainsHardCards && state.workOnlyHard) {
+                onEvent(SetListEvent.OnWorkOnlyHardSwitchClicked)
+            }
+            if (state.selectedSet!!.cards.count { if (doesSetContainsHardCards && state.workOnlyHard) (!it.isHardStudied && it.isHard) else !it.isStudied } == 0) {
                 clickedStudyType = "BASIC"
                 isResetProgressDialogOpen = true
             } else {
@@ -254,9 +266,9 @@ fun SetListScreenContent(
         onCancel = { isStudyDialogOpen = false }
     )
     CustomAlertDialog(
+        isOpen = isResetProgressDialogOpen,
         title = if (!state.workOnlyHard) "Tüm kartlar çalışıldı" else "Tüm zor kartlar çalışıldı",
         text = "Günlük çalışma sıfırlanacak. Bu işlem geri alınamaz.",
-        isOpen = isResetProgressDialogOpen,
         onConfirm = {
             onEvent(SetListEvent.OnResetProgressButtonClicked(state.selectedSet!!.flashcardSet.setId!!))
             if (!state.resetProgress) {

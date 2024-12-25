@@ -8,5 +8,4 @@ sealed class BasicStudyEvent {
     data object OnRepeatCurrentRoundClicked: BasicStudyEvent()
     data class ChangeCurrentCardIndex(val index: Int): BasicStudyEvent()
     data object OnFavoriteButtonClicked: BasicStudyEvent()
-
 }

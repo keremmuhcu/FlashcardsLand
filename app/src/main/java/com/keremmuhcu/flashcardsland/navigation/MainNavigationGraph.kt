@@ -1,5 +1,12 @@
 package com.keremmuhcu.flashcardsland.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,15 +26,46 @@ fun MainNavigationGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Route.SetListScreenRoute
+        startDestination = Route.SetListScreenRoute,
+        /*enterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(300)
+            ) + fadeIn(animationSpec = tween(300))
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(300)
+            ) + fadeOut(animationSpec = tween(300))
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(300)
+            ) + fadeIn(animationSpec = tween(300))
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(300)
+            ) + fadeOut(animationSpec = tween(300))
+        }*/
     ) {
-        composable<Route.SetListScreenRoute> {
+        composable<Route.SetListScreenRoute>(
+            exitTransition = { slideOutHorizontally() },
+            popEnterTransition = { slideInHorizontally() }
+        ){
             SetListScreen(
                 navigateToAddOrEditFlashcardScreen = { setId->
-                    navController.navigate(Route.AddOrEditFlashcardScreenRoute(setId))
+                    navController.navigate(Route.AddOrEditFlashcardScreenRoute(setId)) {
+                        launchSingleTop = true
+                    }
                 },
                 navigateToFlashcardsScreen = { setId, setTitle ->
-                    navController.navigate(Route.FlashcardsScreenRoute(setId, setTitle))
+                    navController.navigate(Route.FlashcardsScreenRoute(setId, setTitle)) {
+                        launchSingleTop = true
+                    }
                 },
                 navigateToBasicStudyScreen = { setId ->
                     navController.navigate(Route.BasicStudyScreenRoute(setId))
@@ -40,7 +78,15 @@ fun MainNavigationGraph(
 
         }
 
-        composable<Route.AddOrEditFlashcardScreenRoute> {
+        composable<Route.AddOrEditFlashcardScreenRoute>(
+            enterTransition = { slideInHorizontally { initialOffset ->
+                initialOffset
+            } },
+            exitTransition = { slideOutHorizontally { initialOffset ->
+                initialOffset
+            } },
+            popEnterTransition = { slideInHorizontally() }
+        ) {
             AddOrEditFlashcardScreen(
                 onNavigateBack = {
                     navController.navigateUp()
@@ -48,7 +94,22 @@ fun MainNavigationGraph(
             )
         }
 
-        composable<Route.FlashcardsScreenRoute> {
+        composable<Route.FlashcardsScreenRoute>(
+            enterTransition = { slideInHorizontally { initialOffset ->
+                initialOffset
+            } },
+            exitTransition = {
+                if (navController.currentDestination?.route?.contains("AddOrEditFlashcardScreenRoute") == true) {
+                    slideOutHorizontally()
+                } else {
+                    slideOutHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                }
+
+            },
+            popEnterTransition = { slideInHorizontally() }
+        ){
             val args = it.toRoute<Route.FlashcardsScreenRoute>()
             val setId = args.setId
 
@@ -64,7 +125,15 @@ fun MainNavigationGraph(
             )
         }
 
-        composable<Route.BasicStudyScreenRoute> {
+        composable<Route.BasicStudyScreenRoute>(
+            enterTransition = { slideInHorizontally { initialOffset ->
+                initialOffset
+            } },
+            exitTransition = { slideOutHorizontally { initialOffset ->
+                initialOffset
+            } },
+            popEnterTransition = { slideInHorizontally() }
+        ) {
             BasicStudyScreen(
                 onNavigateBack = {
                     navController.navigateUp()
@@ -72,7 +141,15 @@ fun MainNavigationGraph(
             )
         }
 
-        composable<Route.MultipleAnswersScreenRoute> {
+        composable<Route.MultipleAnswersScreenRoute>(
+            enterTransition = { slideInHorizontally { initialOffset ->
+                initialOffset
+            } },
+            exitTransition = { slideOutHorizontally { initialOffset ->
+                initialOffset
+            } },
+            popEnterTransition = { slideInHorizontally() }
+        ) {
             MultipleAnswersStudyScreen(
                 onNavigateBack = {
                     navController.navigateUp()

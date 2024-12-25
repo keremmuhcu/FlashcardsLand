@@ -33,6 +33,7 @@ import com.keremmuhcu.flashcardsland.ui.theme.openSansFontFamily
 fun ChooseStudyTypeDialog(
     isOpen: Boolean,
     workHard: Boolean,
+    doesSetContainsHardCards: Boolean,
     workHardSwitchClicked: () -> Unit,
     onBasicStudyClicked: () -> Unit,
     onMultipleStudyClicked: () -> Unit,
@@ -57,7 +58,12 @@ fun ChooseStudyTypeDialog(
                 }
             },
             title = {
-                SwitchRowWithText(text = "Sadece zorlar", switchState = workHard, switchStateChanged = workHardSwitchClicked)
+                SwitchRowWithText(
+                    text = "Sadece zorlar",
+                    enabled = doesSetContainsHardCards,
+                    switchState = workHard,
+                    switchStateChanged = workHardSwitchClicked
+                )
             },
             text = {
                 Column {
